@@ -1,0 +1,695 @@
+You are an elite software engineering organization consisting of a Principal Software Architect, Staff AI Engineer, Senior Full-Stack Engineer, Senior Frontend Engineer, Senior Backend Engineer, Staff UI/UX Designer, QA Lead, Security Engineer and Product Manager.
+
+Your responsibility is to build a COMPLETE production-quality application.
+
+===========================================================
+PROJECT
+===========================================================
+
+Name:
+Neural Workspace
+
+Edition:
+Placement Edition
+
+Tagline:
+AI Development Environment for Modern Software Engineers
+
+Mission:
+Build a modern AI-powered development workspace that helps software engineers throughout the software development lifecycle using intelligent automation.
+
+This is NOT an MVP.
+This is NOT a prototype.
+This is NOT a demo.
+
+Build a polished SaaS-quality application suitable for an AI Engineer portfolio and technical interviews.
+
+===========================================================
+OBJECTIVES
+===========================================================
+
+The application should help developers
+
+• Plan projects
+• Generate software architecture
+• Generate documentation
+• Collaborate with multiple AI agents
+• Build software faster
+• Organize project knowledge
+• Maintain long-term development memory
+
+The application should feel like a professional internal developer platform.
+
+===========================================================
+DESIGN STYLE
+===========================================================
+
+Modern
+
+Minimalistic
+
+Premium
+
+Dark Mode First
+
+Inspired by
+
+Cursor
+
+Linear
+
+Notion
+
+Vercel
+
+OpenAI
+
+Anthropic
+
+Beautiful Sidebar
+
+Responsive Layout
+
+Rounded Cards
+
+Professional Typography
+
+Excellent Spacing
+
+Smooth Animations
+
+Glassmorphism
+
+Loading Skeletons
+
+Toast Notifications
+
+Professional Icons
+
+Empty States
+
+Error States
+
+===========================================================
+TECH STACK
+===========================================================
+
+Frontend
+
+Next.js 15
+
+React
+
+TypeScript
+
+Tailwind CSS
+
+shadcn/ui
+
+Framer Motion
+
+Zustand
+
+TanStack Query
+
+Backend
+
+FastAPI
+
+Python 3.12
+
+SQLAlchemy
+
+Pydantic
+
+Use uv for Python environment management.
+
+Database
+
+SQLite for development
+
+Architecture should allow PostgreSQL migration later without redesign.
+
+AI
+
+Gemini API
+
+Create provider abstraction so OpenAI and Anthropic can be added later.
+
+Load API keys only from environment variables.
+
+Never hardcode secrets.
+
+Deployment
+
+Frontend optimized for Vercel.
+
+Backend optimized for Render.
+
+Do NOT use Docker.
+
+===========================================================
+APPLICATION STRUCTURE
+===========================================================
+
+Authentication
+
+Dashboard
+
+Multi-Agent Workspace
+
+AI Coding Assistant
+
+Project Planner
+
+Architecture Studio
+
+Documentation Studio
+
+Workspace Memory
+
+Prompt Library
+
+Development Workflow
+
+Settings
+
+Profile
+
+===========================================================
+MODULES
+===========================================================
+
+1 Dashboard
+
+Display
+
+Recent Projects
+
+Recent Conversations
+
+AI Usage
+
+Memory Statistics
+
+Project Progress
+
+Recent Activities
+
+Quick Actions
+
+Workspace Analytics
+
+===========================================================
+
+2 Multi-Agent Workspace
+
+Implement specialized AI agents.
+
+Coding Agent
+
+Architecture Agent
+
+Planning Agent
+
+Documentation Agent
+
+Testing Agent
+
+Debugging Agent
+
+Every agent shares common project memory.
+
+Allow switching between agents.
+
+Maintain conversation history.
+
+===========================================================
+
+3 AI Coding Assistant
+
+Streaming AI responses
+
+Markdown rendering
+
+Syntax highlighted code blocks
+
+Copy code
+
+Copy response
+
+Conversation history
+
+Rename conversation
+
+Delete conversation
+
+Pin conversation
+
+Search conversations
+
+Suggested prompts
+
+Auto scrolling
+
+Thinking indicator
+
+Export conversations
+
+Import conversations
+
+===========================================================
+
+4 Project Planner
+
+Projects
+
+Tasks
+
+Milestones
+
+Kanban Board
+
+Priority
+
+Status
+
+Timeline
+
+Progress Charts
+
+Search
+
+Filters
+
+Sorting
+
+Technology Stack
+
+Requirements
+
+===========================================================
+
+5 Architecture Studio
+
+Generate
+
+Folder Structure
+
+Backend Architecture
+
+Frontend Architecture
+
+Database Schema
+
+REST API Design
+
+Component Hierarchy
+
+Technology Recommendations
+
+Mermaid Diagrams
+
+Architecture Explanation
+
+Export Markdown
+
+Copy
+
+Regenerate
+
+===========================================================
+
+6 Documentation Studio
+
+Generate
+
+README
+
+API Documentation
+
+Architecture Documentation
+
+Developer Guide
+
+Deployment Guide
+
+Setup Guide
+
+Project Overview
+
+Changelog
+
+Markdown Preview
+
+Copy
+
+Download
+
+===========================================================
+
+7 Workspace Memory
+
+Persistent Memory
+
+Store
+
+Project Context
+
+Requirements
+
+Architecture Decisions
+
+Development Notes
+
+Documentation
+
+Planning History
+
+Preferences
+
+Categories
+
+Tags
+
+Pinned Notes
+
+Timeline
+
+Search
+
+===========================================================
+
+8 Prompt Library
+
+Create
+
+Edit
+
+Delete
+
+Duplicate
+
+Favorite
+
+Version History
+
+Tags
+
+Categories
+
+Search
+
+Preview
+
+Export
+
+===========================================================
+
+9 Development Workflow
+
+Visual workflow
+
+Idea
+
+↓
+
+Planning
+
+↓
+
+Architecture
+
+↓
+
+Coding
+
+↓
+
+Testing
+
+↓
+
+Documentation
+
+↓
+
+Deployment
+
+Each stage should integrate with the appropriate AI agent.
+
+===========================================================
+
+10 Settings
+
+Theme
+
+AI Provider
+
+Workspace Preferences
+
+Memory Settings
+
+Environment Status
+
+About
+
+===========================================================
+FRONTEND ARCHITECTURE
+===========================================================
+
+Create reusable components.
+
+Separate
+
+Layouts
+
+Pages
+
+Components
+
+Hooks
+
+Services
+
+Stores
+
+Utils
+
+Types
+
+Contexts
+
+Assets
+
+Maintain scalable folder structure.
+
+===========================================================
+BACKEND ARCHITECTURE
+===========================================================
+
+Follow Clean Architecture.
+
+Separate
+
+API
+
+Core
+
+Models
+
+Schemas
+
+Repositories
+
+Services
+
+AI Providers
+
+Memory Service
+
+Planner Service
+
+Documentation Service
+
+Architecture Service
+
+Configuration
+
+Database
+
+Utilities
+
+===========================================================
+DATABASE
+===========================================================
+
+Users
+
+Projects
+
+Tasks
+
+Milestones
+
+Conversations
+
+Messages
+
+Memory
+
+Architecture Documents
+
+Prompt Library
+
+Documentation
+
+===========================================================
+ENGINEERING STANDARDS
+===========================================================
+
+Follow
+
+SOLID
+
+Clean Architecture
+
+Repository Pattern
+
+Dependency Injection
+
+Strict TypeScript
+
+Reusable Components
+
+Reusable Services
+
+No duplicate logic
+
+Centralized error handling
+
+Input validation
+
+Consistent naming
+
+===========================================================
+QUALITY REQUIREMENTS
+===========================================================
+
+Every page must be functional.
+
+Every navigation route must work.
+
+Every API must work.
+
+Every button must perform a real action.
+
+Every form must validate correctly.
+
+Implement
+
+Loading states
+
+Error states
+
+Empty states
+
+Responsive layouts
+
+Proper validation
+
+Professional notifications
+
+Proper database relationships
+
+No placeholder implementations.
+
+No TODO comments.
+
+No dead code.
+
+No duplicate code.
+
+No fake UI.
+
+No unfinished pages.
+
+===========================================================
+DOCUMENTATION
+===========================================================
+
+Generate
+
+README.md
+
+SETUP.md
+
+ARCHITECTURE.md
+
+API.md
+
+CHANGELOG.md
+
+.env.example
+
+requirements.txt
+
+package.json
+
+===========================================================
+QUALITY GATE
+===========================================================
+
+Before finishing
+
+Review the ENTIRE repository.
+
+Verify
+
+Frontend builds successfully.
+
+Backend builds successfully.
+
+No TypeScript errors.
+
+No Python errors.
+
+No broken imports.
+
+No broken routes.
+
+No broken APIs.
+
+No placeholder code.
+
+No TODO comments.
+
+Responsive UI.
+
+Consistent design.
+
+Reusable components.
+
+Environment configuration complete.
+
+Automatically fix every issue found before completion.
+
+===========================================================
+FINAL DELIVERABLE
+===========================================================
+
+Do not stop after generating code.
+
+Complete the application.
+
+Perform a complete repository-wide review.
+
+Fix all detected issues.
+
+Prepare the project as a GitHub-ready repository.
+
+Include all source code, frontend, backend, documentation, assets and configuration.
+
+If the platform supports source export, provide the complete project as a downloadable ZIP containing the entire repository.
+
+The project should be immediately runnable after the user adds valid environment variables to the generated .env.example file.

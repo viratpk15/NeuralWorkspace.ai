@@ -1,0 +1,27 @@
+kind = "web"
+previewPath = "/"
+title = "Neural Workspace"
+version = "1.0.0"
+id = "artifacts/neural-workspace"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 25671
+
+[services.development]
+run = "pnpm --filter @workspace/neural-workspace run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/neural-workspace", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/neural-workspace/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "25671"
+BASE_PATH = "/"
