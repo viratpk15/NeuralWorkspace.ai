@@ -3,20 +3,41 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: Neural Workspace API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: dashboard
+    description: Dashboard statistics
+  - name: projects
+    description: Project management
+  - name: tasks
+    description: Task management
+  - name: milestones
+    description: Milestone management
+  - name: conversations
+    description: AI conversation management
+  - name: messages
+    description: Conversation messages
+  - name: memory
+    description: Workspace memory
+  - name: architecture
+    description: Architecture studio
+  - name: prompts
+    description: Prompt library
+  - name: documentation
+    description: Documentation studio
+  - name: settings
+    description: Application settings
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,6 +45,853 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  # ─── Dashboard ───────────────────────────────────────────────
+  /dashboard/stats:
+    get:
+      operationId: getDashboardStats
+      tags: [dashboard]
+      summary: Get dashboard statistics
+      responses:
+        "200":
+          description: Dashboard stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardStats"
+
+  # ─── Projects ────────────────────────────────────────────────
+  /projects:
+    get:
+      operationId: listProjects
+      tags: [projects]
+      summary: List all projects
+      responses:
+        "200":
+          description: List of projects
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Project"
+    post:
+      operationId: createProject
+      tags: [projects]
+      summary: Create a project
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProjectInput"
+      responses:
+        "201":
+          description: Created project
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Project"
+
+  /projects/{id}:
+    get:
+      operationId: getProject
+      tags: [projects]
+      summary: Get a project
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Project
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Project"
+        "404":
+          description: Not found
+    patch:
+      operationId: updateProject
+      tags: [projects]
+      summary: Update a project
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProjectUpdate"
+      responses:
+        "200":
+          description: Updated project
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Project"
+        "404":
+          description: Not found
+    delete:
+      operationId: deleteProject
+      tags: [projects]
+      summary: Delete a project
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  # ─── Tasks ───────────────────────────────────────────────────
+  /projects/{projectId}/tasks:
+    get:
+      operationId: listProjectTasks
+      tags: [tasks]
+      summary: List tasks for a project
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of tasks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Task"
+    post:
+      operationId: createTask
+      tags: [tasks]
+      summary: Create a task
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TaskInput"
+      responses:
+        "201":
+          description: Created task
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+
+  /tasks:
+    get:
+      operationId: listAllTasks
+      tags: [tasks]
+      summary: List all tasks across projects
+      responses:
+        "200":
+          description: List of tasks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Task"
+
+  /tasks/{id}:
+    patch:
+      operationId: updateTask
+      tags: [tasks]
+      summary: Update a task
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TaskUpdate"
+      responses:
+        "200":
+          description: Updated task
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+        "404":
+          description: Not found
+    delete:
+      operationId: deleteTask
+      tags: [tasks]
+      summary: Delete a task
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  # ─── Milestones ──────────────────────────────────────────────
+  /projects/{projectId}/milestones:
+    get:
+      operationId: listProjectMilestones
+      tags: [milestones]
+      summary: List milestones for a project
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of milestones
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Milestone"
+    post:
+      operationId: createMilestone
+      tags: [milestones]
+      summary: Create a milestone
+      parameters:
+        - name: projectId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MilestoneInput"
+      responses:
+        "201":
+          description: Created milestone
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Milestone"
+
+  /milestones/{id}:
+    patch:
+      operationId: updateMilestone
+      tags: [milestones]
+      summary: Update a milestone
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MilestoneUpdate"
+      responses:
+        "200":
+          description: Updated milestone
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Milestone"
+    delete:
+      operationId: deleteMilestone
+      tags: [milestones]
+      summary: Delete a milestone
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  # ─── Conversations ───────────────────────────────────────────
+  /conversations:
+    get:
+      operationId: listConversations
+      tags: [conversations]
+      summary: List conversations
+      responses:
+        "200":
+          description: List of conversations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Conversation"
+    post:
+      operationId: createConversation
+      tags: [conversations]
+      summary: Create a conversation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ConversationInput"
+      responses:
+        "201":
+          description: Created conversation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Conversation"
+
+  /conversations/{id}:
+    get:
+      operationId: getConversation
+      tags: [conversations]
+      summary: Get a conversation
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Conversation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Conversation"
+        "404":
+          description: Not found
+    patch:
+      operationId: updateConversation
+      tags: [conversations]
+      summary: Update a conversation
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ConversationUpdate"
+      responses:
+        "200":
+          description: Updated conversation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Conversation"
+    delete:
+      operationId: deleteConversation
+      tags: [conversations]
+      summary: Delete a conversation
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /conversations/{id}/messages:
+    get:
+      operationId: listMessages
+      tags: [messages]
+      summary: List messages in a conversation
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of messages
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Message"
+    post:
+      operationId: sendMessage
+      tags: [messages]
+      summary: Send a message (non-streaming, stores user and assistant messages)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MessageInput"
+      responses:
+        "201":
+          description: Assistant message
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Message"
+
+  # ─── Memory ──────────────────────────────────────────────────
+  /memory:
+    get:
+      operationId: listMemoryItems
+      tags: [memory]
+      summary: List memory items
+      responses:
+        "200":
+          description: List of memory items
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MemoryItem"
+    post:
+      operationId: createMemoryItem
+      tags: [memory]
+      summary: Create a memory item
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MemoryItemInput"
+      responses:
+        "201":
+          description: Created memory item
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MemoryItem"
+
+  /memory/{id}:
+    get:
+      operationId: getMemoryItem
+      tags: [memory]
+      summary: Get a memory item
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Memory item
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MemoryItem"
+        "404":
+          description: Not found
+    patch:
+      operationId: updateMemoryItem
+      tags: [memory]
+      summary: Update a memory item
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MemoryItemUpdate"
+      responses:
+        "200":
+          description: Updated memory item
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MemoryItem"
+    delete:
+      operationId: deleteMemoryItem
+      tags: [memory]
+      summary: Delete a memory item
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  # ─── Architecture ─────────────────────────────────────────────
+  /architecture:
+    get:
+      operationId: listArchitectureDocs
+      tags: [architecture]
+      summary: List architecture documents
+      responses:
+        "200":
+          description: List of architecture docs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ArchitectureDoc"
+    post:
+      operationId: createArchitectureDoc
+      tags: [architecture]
+      summary: Create an architecture document
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ArchitectureDocInput"
+      responses:
+        "201":
+          description: Created architecture doc
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ArchitectureDoc"
+
+  /architecture/generate:
+    post:
+      operationId: generateArchitecture
+      tags: [architecture]
+      summary: Generate architecture with AI
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ArchitectureGenerateInput"
+      responses:
+        "201":
+          description: Generated architecture doc
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ArchitectureDoc"
+
+  /architecture/{id}:
+    get:
+      operationId: getArchitectureDoc
+      tags: [architecture]
+      summary: Get an architecture document
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Architecture doc
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ArchitectureDoc"
+    patch:
+      operationId: updateArchitectureDoc
+      tags: [architecture]
+      summary: Update an architecture document
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ArchitectureDocUpdate"
+      responses:
+        "200":
+          description: Updated architecture doc
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ArchitectureDoc"
+    delete:
+      operationId: deleteArchitectureDoc
+      tags: [architecture]
+      summary: Delete an architecture document
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  # ─── Prompts ──────────────────────────────────────────────────
+  /prompts:
+    get:
+      operationId: listPrompts
+      tags: [prompts]
+      summary: List prompts
+      responses:
+        "200":
+          description: List of prompts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Prompt"
+    post:
+      operationId: createPrompt
+      tags: [prompts]
+      summary: Create a prompt
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PromptInput"
+      responses:
+        "201":
+          description: Created prompt
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Prompt"
+
+  /prompts/{id}:
+    get:
+      operationId: getPrompt
+      tags: [prompts]
+      summary: Get a prompt
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Prompt
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Prompt"
+    patch:
+      operationId: updatePrompt
+      tags: [prompts]
+      summary: Update a prompt
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PromptUpdate"
+      responses:
+        "200":
+          description: Updated prompt
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Prompt"
+    delete:
+      operationId: deletePrompt
+      tags: [prompts]
+      summary: Delete a prompt
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  # ─── Documentation ────────────────────────────────────────────
+  /documentation:
+    get:
+      operationId: listDocumentation
+      tags: [documentation]
+      summary: List documentation
+      responses:
+        "200":
+          description: List of documentation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/DocumentationItem"
+    post:
+      operationId: createDocumentation
+      tags: [documentation]
+      summary: Create documentation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DocumentationInput"
+      responses:
+        "201":
+          description: Created documentation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DocumentationItem"
+
+  /documentation/generate:
+    post:
+      operationId: generateDocumentation
+      tags: [documentation]
+      summary: Generate documentation with AI
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DocumentationGenerateInput"
+      responses:
+        "201":
+          description: Generated documentation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DocumentationItem"
+
+  /documentation/{id}:
+    get:
+      operationId: getDocumentation
+      tags: [documentation]
+      summary: Get documentation
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Documentation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DocumentationItem"
+    patch:
+      operationId: updateDocumentation
+      tags: [documentation]
+      summary: Update documentation
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DocumentationUpdate"
+      responses:
+        "200":
+          description: Updated documentation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DocumentationItem"
+    delete:
+      operationId: deleteDocumentation
+      tags: [documentation]
+      summary: Delete documentation
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  # ─── Settings ─────────────────────────────────────────────────
+  /settings:
+    get:
+      operationId: getSettings
+      tags: [settings]
+      summary: Get application settings
+      responses:
+        "200":
+          description: Settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Settings"
+    patch:
+      operationId: updateSettings
+      tags: [settings]
+      summary: Update application settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SettingsUpdate"
+      responses:
+        "200":
+          description: Updated settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Settings"
+
 components:
   schemas:
     HealthStatus:
@@ -31,6 +899,608 @@ components:
       properties:
         status:
           type: string
-      required:
-        - status
+      required: [status]
 
+    # ─── Dashboard ─────────────────────────────────────────
+    DashboardStats:
+      type: object
+      required: [totalProjects, activeProjects, totalTasks, completedTasks, totalConversations, totalMemoryItems, totalPrompts, recentActivity, projectProgress]
+      properties:
+        totalProjects:
+          type: integer
+        activeProjects:
+          type: integer
+        totalTasks:
+          type: integer
+        completedTasks:
+          type: integer
+        totalConversations:
+          type: integer
+        totalMemoryItems:
+          type: integer
+        totalPrompts:
+          type: integer
+        recentActivity:
+          type: array
+          items:
+            $ref: "#/components/schemas/ActivityItem"
+        projectProgress:
+          type: array
+          items:
+            $ref: "#/components/schemas/ProjectProgressItem"
+
+    ActivityItem:
+      type: object
+      required: [id, type, description, createdAt]
+      properties:
+        id:
+          type: integer
+        type:
+          type: string
+        description:
+          type: string
+        createdAt:
+          type: string
+
+    ProjectProgressItem:
+      type: object
+      required: [id, name, totalTasks, completedTasks, status]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        totalTasks:
+          type: integer
+        completedTasks:
+          type: integer
+        status:
+          type: string
+
+    # ─── Projects ──────────────────────────────────────────
+    Project:
+      type: object
+      required: [id, name, description, status, techStack, requirements, createdAt, updatedAt]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        status:
+          type: string
+          enum: [planning, active, paused, completed, archived]
+        techStack:
+          type: array
+          items:
+            type: string
+        requirements:
+          type: array
+          items:
+            type: string
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+
+    ProjectInput:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+          minLength: 1
+        description:
+          type: string
+        status:
+          type: string
+          enum: [planning, active, paused, completed, archived]
+        techStack:
+          type: array
+          items:
+            type: string
+        requirements:
+          type: array
+          items:
+            type: string
+
+    ProjectUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+        description:
+          type: string
+        status:
+          type: string
+          enum: [planning, active, paused, completed, archived]
+        techStack:
+          type: array
+          items:
+            type: string
+        requirements:
+          type: array
+          items:
+            type: string
+
+    # ─── Tasks ─────────────────────────────────────────────
+    Task:
+      type: object
+      required: [id, projectId, title, description, status, priority, createdAt, updatedAt]
+      properties:
+        id:
+          type: integer
+        projectId:
+          type: integer
+        milestoneId:
+          type: ["integer", "null"]
+        title:
+          type: string
+        description:
+          type: string
+        status:
+          type: string
+          enum: [todo, in_progress, review, done, cancelled]
+        priority:
+          type: string
+          enum: [low, medium, high, urgent]
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+
+    TaskInput:
+      type: object
+      required: [title]
+      properties:
+        title:
+          type: string
+          minLength: 1
+        description:
+          type: string
+        status:
+          type: string
+          enum: [todo, in_progress, review, done, cancelled]
+        priority:
+          type: string
+          enum: [low, medium, high, urgent]
+        milestoneId:
+          type: ["integer", "null"]
+
+    TaskUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        status:
+          type: string
+          enum: [todo, in_progress, review, done, cancelled]
+        priority:
+          type: string
+          enum: [low, medium, high, urgent]
+        milestoneId:
+          type: ["integer", "null"]
+
+    # ─── Milestones ────────────────────────────────────────
+    Milestone:
+      type: object
+      required: [id, projectId, name, description, status, createdAt]
+      properties:
+        id:
+          type: integer
+        projectId:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        dueDate:
+          type: ["string", "null"]
+        status:
+          type: string
+          enum: [pending, in_progress, completed]
+        createdAt:
+          type: string
+
+    MilestoneInput:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+          minLength: 1
+        description:
+          type: string
+        dueDate:
+          type: string
+        status:
+          type: string
+          enum: [pending, in_progress, completed]
+
+    MilestoneUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        dueDate:
+          type: ["string", "null"]
+        status:
+          type: string
+          enum: [pending, in_progress, completed]
+
+    # ─── Conversations ─────────────────────────────────────
+    Conversation:
+      type: object
+      required: [id, title, agentType, pinned, messageCount, createdAt, updatedAt]
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        agentType:
+          type: string
+          enum: [coding, architecture, planning, documentation, testing, debugging, general]
+        pinned:
+          type: boolean
+        projectId:
+          type: ["integer", "null"]
+        messageCount:
+          type: integer
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+
+    ConversationInput:
+      type: object
+      required: [title, agentType]
+      properties:
+        title:
+          type: string
+          minLength: 1
+        agentType:
+          type: string
+          enum: [coding, architecture, planning, documentation, testing, debugging, general]
+        projectId:
+          type: ["integer", "null"]
+        pinned:
+          type: boolean
+
+    ConversationUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+        agentType:
+          type: string
+          enum: [coding, architecture, planning, documentation, testing, debugging, general]
+        pinned:
+          type: boolean
+        projectId:
+          type: ["integer", "null"]
+
+    # ─── Messages ──────────────────────────────────────────
+    Message:
+      type: object
+      required: [id, conversationId, role, content, createdAt]
+      properties:
+        id:
+          type: integer
+        conversationId:
+          type: integer
+        role:
+          type: string
+          enum: [user, assistant]
+        content:
+          type: string
+        createdAt:
+          type: string
+
+    MessageInput:
+      type: object
+      required: [content]
+      properties:
+        content:
+          type: string
+          minLength: 1
+
+    # ─── Memory ────────────────────────────────────────────
+    MemoryItem:
+      type: object
+      required: [id, title, content, category, tags, pinned, createdAt, updatedAt]
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        content:
+          type: string
+        category:
+          type: string
+          enum: [context, requirements, decisions, notes, documentation, preferences, general]
+        tags:
+          type: array
+          items:
+            type: string
+        pinned:
+          type: boolean
+        projectId:
+          type: ["integer", "null"]
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+
+    MemoryItemInput:
+      type: object
+      required: [title, content]
+      properties:
+        title:
+          type: string
+          minLength: 1
+        content:
+          type: string
+        category:
+          type: string
+          enum: [context, requirements, decisions, notes, documentation, preferences, general]
+        tags:
+          type: array
+          items:
+            type: string
+        pinned:
+          type: boolean
+        projectId:
+          type: ["integer", "null"]
+
+    MemoryItemUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+        content:
+          type: string
+        category:
+          type: string
+          enum: [context, requirements, decisions, notes, documentation, preferences, general]
+        tags:
+          type: array
+          items:
+            type: string
+        pinned:
+          type: boolean
+        projectId:
+          type: ["integer", "null"]
+
+    # ─── Architecture ──────────────────────────────────────
+    ArchitectureDoc:
+      type: object
+      required: [id, title, content, docType, createdAt, updatedAt]
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        content:
+          type: string
+        docType:
+          type: string
+          enum: [folder_structure, backend, frontend, database, api_design, component_hierarchy, tech_recommendations, full]
+        projectId:
+          type: ["integer", "null"]
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+
+    ArchitectureDocInput:
+      type: object
+      required: [title, content, docType]
+      properties:
+        title:
+          type: string
+          minLength: 1
+        content:
+          type: string
+        docType:
+          type: string
+          enum: [folder_structure, backend, frontend, database, api_design, component_hierarchy, tech_recommendations, full]
+        projectId:
+          type: ["integer", "null"]
+
+    ArchitectureDocUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+        content:
+          type: string
+        docType:
+          type: string
+          enum: [folder_structure, backend, frontend, database, api_design, component_hierarchy, tech_recommendations, full]
+
+    ArchitectureGenerateInput:
+      type: object
+      required: [prompt, docType]
+      properties:
+        prompt:
+          type: string
+          minLength: 1
+        docType:
+          type: string
+          enum: [folder_structure, backend, frontend, database, api_design, component_hierarchy, tech_recommendations, full]
+        projectId:
+          type: ["integer", "null"]
+        projectName:
+          type: string
+        techStack:
+          type: array
+          items:
+            type: string
+
+    # ─── Prompts ───────────────────────────────────────────
+    Prompt:
+      type: object
+      required: [id, title, content, category, tags, favorite, version, createdAt, updatedAt]
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        content:
+          type: string
+        category:
+          type: string
+          enum: [coding, architecture, planning, documentation, testing, debugging, general]
+        tags:
+          type: array
+          items:
+            type: string
+        favorite:
+          type: boolean
+        version:
+          type: integer
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+
+    PromptInput:
+      type: object
+      required: [title, content]
+      properties:
+        title:
+          type: string
+          minLength: 1
+        content:
+          type: string
+          minLength: 1
+        category:
+          type: string
+          enum: [coding, architecture, planning, documentation, testing, debugging, general]
+        tags:
+          type: array
+          items:
+            type: string
+        favorite:
+          type: boolean
+
+    PromptUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+        content:
+          type: string
+        category:
+          type: string
+          enum: [coding, architecture, planning, documentation, testing, debugging, general]
+        tags:
+          type: array
+          items:
+            type: string
+        favorite:
+          type: boolean
+
+    # ─── Documentation ─────────────────────────────────────
+    DocumentationItem:
+      type: object
+      required: [id, title, docType, content, createdAt, updatedAt]
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        docType:
+          type: string
+          enum: [readme, api_docs, architecture, developer_guide, deployment, setup, overview, changelog]
+        content:
+          type: string
+        projectId:
+          type: ["integer", "null"]
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+
+    DocumentationInput:
+      type: object
+      required: [title, docType, content]
+      properties:
+        title:
+          type: string
+          minLength: 1
+        docType:
+          type: string
+          enum: [readme, api_docs, architecture, developer_guide, deployment, setup, overview, changelog]
+        content:
+          type: string
+        projectId:
+          type: ["integer", "null"]
+
+    DocumentationUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+        docType:
+          type: string
+          enum: [readme, api_docs, architecture, developer_guide, deployment, setup, overview, changelog]
+        content:
+          type: string
+
+    DocumentationGenerateInput:
+      type: object
+      required: [docType, prompt]
+      properties:
+        docType:
+          type: string
+          enum: [readme, api_docs, architecture, developer_guide, deployment, setup, overview, changelog]
+        prompt:
+          type: string
+          minLength: 1
+        projectId:
+          type: ["integer", "null"]
+        projectName:
+          type: string
+        techStack:
+          type: array
+          items:
+            type: string
+
+    # ─── Settings ──────────────────────────────────────────
+    Settings:
+      type: object
+      required: [id, theme, aiModel, workspaceName, updatedAt]
+      properties:
+        id:
+          type: integer
+        theme:
+          type: string
+          enum: [dark, light, system]
+        aiModel:
+          type: string
+        workspaceName:
+          type: string
+        memoryEnabled:
+          type: boolean
+        updatedAt:
+          type: string
+
+    SettingsUpdate:
+      type: object
+      properties:
+        theme:
+          type: string
+          enum: [dark, light, system]
+        aiModel:
+          type: string
+        workspaceName:
+          type: string
+        memoryEnabled:
+          type: boolean
