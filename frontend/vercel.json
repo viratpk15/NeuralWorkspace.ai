@@ -1,5 +1,6 @@
 {
   "version": 2,
+  "enableCorepack": true,
   "builds": [
     {
       "src": "package.json",
@@ -20,6 +21,8 @@
     }
   ],
   "env": {
-"VITE_API_URL":"https://nurturing-hope-production-3e49.up.railway.app","ENABLE_COREPACK":"1"
+    "VITE_API_URL": "https://nurturing-hope-production-3e49.up.railway.app",
+    "ENABLE_COREPACK": "1"
   }
 }
+
