@@ -9,9 +9,16 @@ export const documentationTable = pgTable("documentation", {
   content: text("content").notNull(),
   projectId: integer("project_id"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow().$onUpdate(() => new Date()),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .notNull()
+    .defaultNow()
+    .$onUpdate(() => new Date()),
 });
 
-export const insertDocumentationSchema = createInsertSchema(documentationTable).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertDocumentationSchema = createInsertSchema(documentationTable).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
 export type InsertDocumentation = z.infer<typeof insertDocumentationSchema>;
 export type Documentation = typeof documentationTable.$inferSelect;

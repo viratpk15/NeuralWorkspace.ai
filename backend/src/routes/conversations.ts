@@ -11,9 +11,29 @@ import {
   SendMessageParams,
   ListMessagesParams,
 } from "@workspace/api-zod";
-import { genai, DEFAULT_MODEL, buildHistory, getAgentSystemInstruction } from "../lib/gemini";
+import { getLLMProvider } from "../lib/config";
+import { LLMProviderError, getAgentSystemInstruction } from "../lib/llm";
 
 const router: IRouter = Router();
+
+/**
+ * Build a single prompt string from message history + new user content.
+ * Used for generation with providers that don't support multi-turn history
+ * natively (like Ollama's /api/generate).
+ */
+function buildPrompt(
+  history: Array<{ role: string; content: string }>,
+  newContent: string,
+): string {
+  const parts: string[] = [];
+  for (const msg of history) {
+    const role = msg.role === "assistant" ? "Assistant" : "User";
+    parts.push(`${role}: ${msg.content}`);
+  }
+  parts.push(`User: ${newContent}`);
+  parts.push("Assistant:");
+  return parts.join("\n\n");
+}
 
 async function serializeConversation(conv: typeof conversationsTable.$inferSelect) {
   const [msgCount] = await db
@@ -173,18 +193,12 @@ router.post("/conversations/:id/messages", async (req, res): Promise<void> => {
   const systemInstruction = getAgentSystemInstruction(conv.agentType);
 
   try {
-    const aiHistory = buildHistory(history.slice(0, -1));
-    const chat = genai.chats.create({
-      model: DEFAULT_MODEL,
-      config: { systemInstruction, maxOutputTokens: 8192 },
-      history: aiHistory,
+    const provider = getLLMProvider();
+    const prompt = buildPrompt(history.slice(0, -1), parsed.data.content);
+    const aiContent = await provider.generate(prompt, {
+      systemInstruction,
+      maxOutputTokens: 8192,
     });
-
-    const result = await chat.sendMessage({
-      message: parsed.data.content,
-    });
-
-    const aiContent = result.text ?? "I was unable to generate a response.";
 
     const [assistantMessage] = await db
       .insert(messagesTable)
@@ -202,8 +216,27 @@ router.post("/conversations/:id/messages", async (req, res): Promise<void> => {
       createdAt: assistantMessage.createdAt.toISOString(),
     });
   } catch (err) {
+    if (err instanceof LLMProviderError) {
+      const statusMap: Record<string, number> = {
+        PROVIDER_UNAVAILABLE: 503,
+        QUOTA_EXCEEDED: 429,
+        VALIDATION_ERROR: 400,
+        UNEXPECTED_ERROR: 500,
+      };
+      const status = statusMap[err.code] ?? 500;
+      res.status(status).json({
+        code: err.code,
+        provider: err.provider,
+        message: err.message,
+      });
+      return;
+    }
     req.log.error({ err }, "AI generation failed");
-    res.status(500).json({ error: "AI generation failed. Please try again." });
+    res.status(500).json({
+      code: "UNEXPECTED_ERROR",
+      provider: "unknown",
+      message: "AI generation failed. Please try again.",
+    });
   }
 });
 
@@ -255,21 +288,15 @@ router.post("/conversations/:id/stream", async (req, res): Promise<void> => {
   let fullResponse = "";
 
   try {
-    const aiHistory = buildHistory(history.slice(0, -1));
-    const chat = genai.chats.create({
-      model: DEFAULT_MODEL,
-      config: { systemInstruction, maxOutputTokens: 8192 },
-      history: aiHistory,
-    });
+    const provider = getLLMProvider();
+    const prompt = buildPrompt(history.slice(0, -1), body.content);
 
-    const stream = await chat.sendMessageStream({ message: body.content });
-
-    for await (const chunk of stream) {
-      const text = chunk.text;
-      if (text) {
-        fullResponse += text;
-        res.write(`data: ${JSON.stringify({ content: text })}\n\n`);
-      }
+    for await (const chunk of provider.stream(prompt, {
+      systemInstruction,
+      maxOutputTokens: 8192,
+    })) {
+      fullResponse += chunk;
+      res.write(`data: ${JSON.stringify({ content: chunk })}\n\n`);
     }
 
     // Save assistant message
@@ -287,8 +314,20 @@ router.post("/conversations/:id/stream", async (req, res): Promise<void> => {
     res.write(`data: ${JSON.stringify({ done: true })}\n\n`);
     res.end();
   } catch (err) {
+    if (err instanceof LLMProviderError) {
+      const errorPayload = {
+        code: err.code,
+        provider: err.provider,
+        message: err.message,
+      };
+      res.write(`data: ${JSON.stringify(errorPayload)}\n\n`);
+      res.end();
+      return;
+    }
     req.log.error({ err }, "Streaming AI failed");
-    res.write(`data: ${JSON.stringify({ error: "AI generation failed." })}\n\n`);
+    res.write(
+      `data: ${JSON.stringify({ code: "UNEXPECTED_ERROR", provider: "unknown", message: "AI generation failed." })}\n\n`,
+    );
     res.end();
   }
 });

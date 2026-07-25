@@ -20,10 +20,7 @@ function serialize(p: typeof promptsTable.$inferSelect) {
 }
 
 router.get("/prompts", async (_req, res): Promise<void> => {
-  const items = await db
-    .select()
-    .from(promptsTable)
-    .orderBy(desc(promptsTable.updatedAt));
+  const items = await db.select().from(promptsTable).orderBy(desc(promptsTable.updatedAt));
   res.json(items.map(serialize));
 });
 
@@ -54,10 +51,7 @@ router.get("/prompts/:id", async (req, res): Promise<void> => {
     res.status(400).json({ error: params.error.message });
     return;
   }
-  const [item] = await db
-    .select()
-    .from(promptsTable)
-    .where(eq(promptsTable.id, params.data.id));
+  const [item] = await db.select().from(promptsTable).where(eq(promptsTable.id, params.data.id));
   if (!item) {
     res.status(404).json({ error: "Prompt not found" });
     return;

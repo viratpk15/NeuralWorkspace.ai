@@ -1,66 +1,187 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Workflow, ArrowRight } from "lucide-react";
+import { Workflow, ArrowRight, ChevronRight, Zap } from "lucide-react";
 import { Link } from "wouter";
-import { Button } from "@/components/ui/button";
 
 const STAGES = [
-  { id: "idea", label: "Idea", desc: "Conceptualize and scope", path: "/planner", color: "text-purple-500", bg: "bg-purple-500/10" },
-  { id: "plan", label: "Planning", desc: "Define requirements", path: "/planner", color: "text-green-500", bg: "bg-green-500/10" },
-  { id: "arch", label: "Architecture", desc: "Design the system", path: "/architecture", color: "text-purple-500", bg: "bg-purple-500/10" },
-  { id: "code", label: "Coding", desc: "Implement features", path: "/assistant", color: "text-blue-500", bg: "bg-blue-500/10" },
-  { id: "test", label: "Testing", desc: "Verify & QA", path: "/workspace", color: "text-cyan-500", bg: "bg-cyan-500/10" },
-  { id: "docs", label: "Documentation", desc: "Write guides", path: "/docs-studio", color: "text-amber-500", bg: "bg-amber-500/10" },
-  { id: "deploy", label: "Deployment", desc: "Ship to production", path: "/planner", color: "text-red-500", bg: "bg-red-500/10" },
+  {
+    id: "idea",
+    label: "Idea",
+    desc: "Conceptualize and scope",
+    path: "/planner",
+    number: "01",
+    detail: "Define your vision, goals, and initial requirements.",
+  },
+  {
+    id: "plan",
+    label: "Planning",
+    desc: "Define requirements",
+    path: "/planner",
+    number: "02",
+    detail: "Break down features into actionable tasks and milestones.",
+  },
+  {
+    id: "arch",
+    label: "Architecture",
+    desc: "Design the system",
+    path: "/architecture",
+    number: "03",
+    detail: "Generate system designs, database schemas, and API specs.",
+  },
+  {
+    id: "code",
+    label: "Coding",
+    desc: "Implement features",
+    path: "/assistant",
+    number: "04",
+    detail: "AI-powered coding assistance with real-time feedback.",
+  },
+  {
+    id: "test",
+    label: "Testing",
+    desc: "Verify & QA",
+    path: "/workspace",
+    number: "05",
+    detail: "Write tests, identify edge cases, and validate output.",
+  },
+  {
+    id: "docs",
+    label: "Documentation",
+    desc: "Write guides",
+    path: "/docs-studio",
+    number: "06",
+    detail: "Generate READMEs, API docs, and deployment guides.",
+  },
+  {
+    id: "deploy",
+    label: "Deployment",
+    desc: "Ship to production",
+    path: "/planner",
+    number: "07",
+    detail: "Plan your deployment strategy and release pipeline.",
+  },
 ];
 
 export default function WorkflowPage() {
   return (
     <div className="space-y-8 animate-in fade-in duration-300">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight mb-1 flex items-center gap-3">
-          <Workflow className="size-8 text-primary" />
-          Development Workflow
-        </h1>
-        <p className="text-muted-foreground">Your AI-assisted software development pipeline from concept to deployment.</p>
+      {/* Header */}
+      <div className="flex items-center gap-4">
+        <div className="size-12 rounded-xl bg-primary/10 flex items-center justify-center">
+          <Workflow className="size-6 text-primary" />
+        </div>
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">
+            Development Workflow
+          </h1>
+          <p className="text-muted-foreground mt-1">
+            Your AI-assisted pipeline from concept to deployment
+          </p>
+        </div>
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-3 items-stretch justify-center">
+      {/* Vertical Workflow */}
+      <div className="space-y-3">
         {STAGES.map((stage, i) => (
-          <div key={stage.id} className="flex items-center gap-3 flex-1">
-            <Link href={stage.path} className="flex-1">
-              <Card className="bg-card/50 backdrop-blur hover:border-primary/50 transition-all hover:scale-105 h-full cursor-pointer">
-                <CardHeader className="pb-3">
-                  <div className={`inline-flex size-10 items-center justify-center rounded-lg ${stage.bg} mb-2`}>
-                    <span className={`text-lg font-bold ${stage.color}`}>{i + 1}</span>
+          <div key={stage.id} className="relative">
+            <Link href={stage.path}>
+              <Card className="group cursor-pointer border-border/50 hover:border-primary/50 hover:shadow-md transition-all">
+                <CardContent className="p-5 flex items-center gap-5">
+                  {/* Step Number */}
+                  <div className="shrink-0">
+                    <div className="size-14 rounded-xl bg-muted flex items-center justify-center group-hover:bg-primary/10 transition-colors">
+                      <span className="text-lg font-bold text-foreground group-hover:text-primary transition-colors">
+                        {stage.number}
+                      </span>
+                    </div>
                   </div>
-                  <CardTitle className="text-lg">{stage.label}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground">{stage.desc}</p>
+
+                  {/* Arrow connector */}
+                  {i < STAGES.length - 1 && (
+                    <div className="hidden sm:flex absolute left-[4.1rem] top-[5.5rem] -translate-x-1/2 flex-col items-center">
+                      <ChevronRight className="size-4 text-muted-foreground -rotate-90" />
+                    </div>
+                  )}
+
+                  {/* Content */}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-3 mb-1">
+                      <h3 className="text-lg font-semibold group-hover:text-primary transition-colors">
+                        {stage.label}
+                      </h3>
+                      <span className="text-xs text-muted-foreground font-medium">
+                        {stage.desc}
+                      </span>
+                    </div>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      {stage.detail}
+                    </p>
+                  </div>
+
+                  {/* Arrow icon */}
+                  <div className="shrink-0 text-muted-foreground group-hover:text-primary transition-colors">
+                    <ArrowRight className="size-5" />
+                  </div>
                 </CardContent>
               </Card>
             </Link>
-            {i < STAGES.length - 1 && (
-              <ArrowRight className="size-5 text-muted-foreground hidden lg:block" />
-            )}
           </div>
         ))}
       </div>
 
-      <Card className="bg-card/50 backdrop-blur">
+      {/* How It Works */}
+      <Card>
         <CardHeader>
-          <CardTitle>How It Works</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            <Zap className="size-5 text-primary" />
+            How It Works
+          </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4 text-sm text-foreground/80 leading-relaxed">
-          <p>Neural Workspace provides a complete AI-powered development environment. Each stage of your workflow is supported by specialized agents:</p>
-          <ul className="list-disc list-inside space-y-2 pl-4">
-            <li><strong>Planning Agent:</strong> Helps you define requirements, break down features, and organize tasks.</li>
-            <li><strong>Architecture Agent:</strong> Generates system designs, database schemas, API specifications, and tech recommendations.</li>
-            <li><strong>Coding Agent:</strong> Assists with implementation, code reviews, and debugging.</li>
-            <li><strong>Testing Agent:</strong> Helps write tests, identify edge cases, and verify functionality.</li>
-            <li><strong>Documentation Agent:</strong> Generates READMEs, API docs, developer guides, and deployment instructions.</li>
+          <p>
+            Neural Workspace provides a complete AI-powered development environment. Each stage of
+            your workflow is supported by specialized agents:
+          </p>
+          <ul className="space-y-3 pl-4">
+            <li className="flex gap-3">
+              <span className="shrink-0 size-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">1</span>
+              <div>
+                <strong>Planning Agent:</strong> Helps you define requirements, break down features,
+                and organize tasks.
+              </div>
+            </li>
+            <li className="flex gap-3">
+              <span className="shrink-0 size-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">2</span>
+              <div>
+                <strong>Architecture Agent:</strong> Generates system designs, database schemas, API
+                specifications, and tech recommendations.
+              </div>
+            </li>
+            <li className="flex gap-3">
+              <span className="shrink-0 size-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">3</span>
+              <div>
+                <strong>Coding Agent:</strong> Assists with implementation, code reviews, and
+                debugging.
+              </div>
+            </li>
+            <li className="flex gap-3">
+              <span className="shrink-0 size-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">4</span>
+              <div>
+                <strong>Testing Agent:</strong> Helps write tests, identify edge cases, and verify
+                functionality.
+              </div>
+            </li>
+            <li className="flex gap-3">
+              <span className="shrink-0 size-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">5</span>
+              <div>
+                <strong>Documentation Agent:</strong> Generates READMEs, API docs, developer guides,
+                and deployment instructions.
+              </div>
+            </li>
           </ul>
-          <p className="pt-2">Use <strong>Workspace Memory</strong> to give agents persistent context about your project, team conventions, and architectural decisions.</p>
+          <p className="pt-2">
+            Use <strong>Workspace Memory</strong> to give agents persistent context about your
+            project, team conventions, and architectural decisions.
+          </p>
         </CardContent>
       </Card>
     </div>

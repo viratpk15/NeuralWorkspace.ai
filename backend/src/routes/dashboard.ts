@@ -75,7 +75,11 @@ router.get("/dashboard/stats", async (req, res): Promise<void> => {
     }));
 
   // Project progress
-  const projects = await db.select().from(projectsTable).orderBy(sql`${projectsTable.updatedAt} desc`).limit(6);
+  const projects = await db
+    .select()
+    .from(projectsTable)
+    .orderBy(sql`${projectsTable.updatedAt} desc`)
+    .limit(6);
   const projectProgress = await Promise.all(
     projects.map(async (p) => {
       const [stats] = await db

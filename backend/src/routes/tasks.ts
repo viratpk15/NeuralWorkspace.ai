@@ -61,10 +61,7 @@ router.post("/projects/:projectId/tasks", async (req, res): Promise<void> => {
 });
 
 router.get("/tasks", async (_req, res): Promise<void> => {
-  const tasks = await db
-    .select()
-    .from(tasksTable)
-    .orderBy(desc(tasksTable.createdAt));
+  const tasks = await db.select().from(tasksTable).orderBy(desc(tasksTable.createdAt));
   res.json(tasks.map(serializeTask));
 });
 

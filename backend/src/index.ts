@@ -1,13 +1,10 @@
+// Load .env BEFORE any other imports that depend on process.env
+import "./lib/config";
+
 import app from "./app";
 import { logger } from "./lib/logger";
 
-const rawPort = process.env["PORT"];
-
-if (!rawPort) {
-  throw new Error(
-    "PORT environment variable is required but was not provided.",
-  );
-}
+const rawPort = process.env["PORT"] ?? "3001";
 
 const port = Number(rawPort);
 

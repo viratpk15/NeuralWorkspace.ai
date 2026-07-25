@@ -9,9 +9,16 @@ export const architectureDocsTable = pgTable("architecture_docs", {
   docType: text("doc_type").notNull().default("full"),
   projectId: integer("project_id"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow().$onUpdate(() => new Date()),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .notNull()
+    .defaultNow()
+    .$onUpdate(() => new Date()),
 });
 
-export const insertArchitectureDocSchema = createInsertSchema(architectureDocsTable).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertArchitectureDocSchema = createInsertSchema(architectureDocsTable).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
 export type InsertArchitectureDoc = z.infer<typeof insertArchitectureDocSchema>;
 export type ArchitectureDoc = typeof architectureDocsTable.$inferSelect;

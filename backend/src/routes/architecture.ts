@@ -9,7 +9,9 @@ import {
   UpdateArchitectureDocBody,
   DeleteArchitectureDocParams,
 } from "@workspace/api-zod";
-import { genai, DEFAULT_MODEL } from "../lib/gemini";
+import { getLLMProvider } from "../lib/config";
+import { LLMProviderError } from "../lib/llm";
+import { initSSEStream, writeSSEChunk, endSSEStream, errorSSEStream } from "../lib/stream-utils";
 
 const router: IRouter = Router();
 
@@ -67,6 +69,7 @@ router.post("/architecture/generate", async (req, res): Promise<void> => {
     full: "Full System Architecture",
   };
 
+  const promptConstructStart = Date.now();
   const systemPrompt = `You are an expert Software Architect. Generate detailed, professional software architecture documentation in Markdown format.
 Include Mermaid diagrams where appropriate (use \`\`\`mermaid ... \`\`\` blocks).
 Be specific, practical, and production-ready. Do not add unnecessary preamble.`;
@@ -85,25 +88,155 @@ Provide a comprehensive ${docTypeLabels[docType] ?? docType} in Markdown with:
 - Specific implementation details
 - Best practices and rationale`;
 
-  try {
-    const result = await genai.models.generateContent({
-      model: DEFAULT_MODEL,
-      config: { systemInstruction: systemPrompt, maxOutputTokens: 8192 },
-      contents: [{ role: "user", parts: [{ text: userPrompt }] }],
-    });
+  const promptConstructEnd = Date.now();
+  const promptLength = userPrompt.length;
+  const estimatedTokens = Math.ceil(promptLength / 4);
 
-    const content = result.text ?? "Failed to generate architecture document.";
+  const generateStart = Date.now();
+  try {
+    const provider = getLLMProvider();
+    const requestBody = {
+      model: provider.model,
+      prompt: userPrompt,
+      stream: false,
+      system: systemPrompt,
+      num_predict: 2048,
+    };
+    req.log.info(
+      {
+        provider: provider.name,
+        model: provider.model,
+        maxOutputTokens: 2048,
+        promptLength,
+        estimatedTokens,
+        systemInstructionLength: systemPrompt.length,
+        userPromptLength: promptLength,
+        requestToProvider: JSON.stringify(requestBody),
+      },
+      "Architecture generation request to provider",
+    );
+    const content = await provider.generate(userPrompt, {
+      systemInstruction: systemPrompt,
+      maxOutputTokens: 2048,
+    });
+    const generateEnd = Date.now();
+
+    const dbSaveStart = Date.now();
     const title = `${docTypeLabels[docType] ?? docType}${projectName ? ` - ${projectName}` : ""}`;
 
     const [doc] = await db
       .insert(architectureDocsTable)
       .values({ title, content, docType, projectId: projectId ?? null })
       .returning();
+    const dbSaveEnd = Date.now();
+
+    const totalEnd = Date.now();
+    req.log.info(
+      {
+        provider: provider.name,
+        model: provider.model,
+        maxOutputTokens: 2048,
+        promptLength,
+        estimatedTokens,
+        promptConstructMs: promptConstructEnd - promptConstructStart,
+        generateMs: generateEnd - generateStart,
+        dbSaveMs: dbSaveEnd - dbSaveStart,
+        totalMs: totalEnd - generateStart,
+      },
+      "Architecture generation timing",
+    );
 
     res.status(201).json(serialize(doc));
   } catch (err) {
+    if (err instanceof LLMProviderError) {
+      const statusMap: Record<string, number> = {
+        PROVIDER_UNAVAILABLE: 503,
+        QUOTA_EXCEEDED: 429,
+        VALIDATION_ERROR: 400,
+        UNEXPECTED_ERROR: 500,
+      };
+      const status = statusMap[err.code] ?? 500;
+      res.status(status).json({
+        code: err.code,
+        provider: err.provider,
+        message: err.message,
+      });
+      return;
+    }
     req.log.error({ err }, "Architecture generation failed");
-    res.status(500).json({ error: "AI generation failed. Please try again." });
+    res.status(500).json({
+      code: "UNEXPECTED_ERROR",
+      provider: "unknown",
+      message: "AI generation failed. Please try again.",
+    });
+  }
+});
+
+// SSE streaming endpoint for architecture generation
+router.post("/architecture/generate/stream", async (req, res): Promise<void> => {
+  const parsed = GenerateArchitectureBody.safeParse(req.body);
+  if (!parsed.success) {
+    res.status(400).json({ error: parsed.error.message });
+    return;
+  }
+
+  const { prompt, docType, projectId, projectName, techStack } = parsed.data;
+
+  const docTypeLabels: Record<string, string> = {
+    folder_structure: "Folder Structure",
+    backend: "Backend Architecture",
+    frontend: "Frontend Architecture",
+    database: "Database Schema",
+    api_design: "REST API Design",
+    component_hierarchy: "Component Hierarchy",
+    tech_recommendations: "Technology Recommendations",
+    full: "Full System Architecture",
+  };
+
+  const systemPrompt = `You are an expert Software Architect. Generate detailed, professional software architecture documentation in Markdown format.
+Include Mermaid diagrams where appropriate (use \`\`\`mermaid ... \`\`\` blocks).
+Be specific, practical, and production-ready. Do not add unnecessary preamble.`;
+
+  const userPrompt = `Generate a ${docTypeLabels[docType] ?? docType} document.
+
+Project: ${projectName ?? "Unnamed Project"}
+Tech Stack: ${techStack?.join(", ") ?? "Not specified"}
+
+Requirements/Context:
+${prompt}
+
+Provide a comprehensive ${docTypeLabels[docType] ?? docType} in Markdown with:
+- Clear sections and headers
+- Mermaid diagrams where applicable
+- Specific implementation details
+- Best practices and rationale`;
+
+  initSSEStream(res);
+
+  let fullContent = "";
+
+  try {
+    const provider = getLLMProvider();
+
+    for await (const chunk of provider.stream(userPrompt, {
+      systemInstruction: systemPrompt,
+      maxOutputTokens: 2048,
+    })) {
+      fullContent += chunk;
+      writeSSEChunk(res, { content: chunk });
+    }
+
+    // Save to database after streaming finishes
+    const title = `${docTypeLabels[docType] ?? docType}${projectName ? ` - ${projectName}` : ""}`;
+    const [doc] = await db
+      .insert(architectureDocsTable)
+      .values({ title, content: fullContent, docType, projectId: projectId ?? null })
+      .returning();
+
+    endSSEStream(res, { document: serialize(doc) });
+  } catch (err) {
+    req.log.error({ err }, "Architecture streaming generation failed");
+    errorSSEStream(res, err);
   }
 });
 

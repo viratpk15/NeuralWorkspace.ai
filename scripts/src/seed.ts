@@ -209,7 +209,8 @@ async function seed() {
     {
       conversationId: conv1.id,
       role: "user",
-      content: "I need to design a distributed cache service that handles 1M requests per second. What architecture would you recommend?",
+      content:
+        "I need to design a distributed cache service that handles 1M requests per second. What architecture would you recommend?",
     },
     {
       conversationId: conv1.id,
@@ -292,7 +293,8 @@ This is extremely powerful for building type-safe utilities.`,
   await db.insert(memoryItemsTable).values([
     {
       title: "Neural Workspace Tech Stack Decision",
-      content: "Chose React + Vite over Next.js for better control over routing and bundle size. Express over Fastify for better TypeScript support in the monorepo.",
+      content:
+        "Chose React + Vite over Next.js for better control over routing and bundle size. Express over Fastify for better TypeScript support in the monorepo.",
       category: "decisions",
       tags: ["architecture", "stack", "frontend"],
       pinned: true,
@@ -300,7 +302,8 @@ This is extremely powerful for building type-safe utilities.`,
     },
     {
       title: "API Design Principles",
-      content: "All APIs follow REST conventions. Use PATCH for partial updates, never PUT. Response shapes always match the OpenAPI spec. Error responses use { error: string } shape.",
+      content:
+        "All APIs follow REST conventions. Use PATCH for partial updates, never PUT. Response shapes always match the OpenAPI spec. Error responses use { error: string } shape.",
       category: "requirements",
       tags: ["api", "backend", "standards"],
       pinned: true,
@@ -308,7 +311,8 @@ This is extremely powerful for building type-safe utilities.`,
     },
     {
       title: "Gemini AI Model Selection",
-      content: "Using gemini-2.5-flash for chat (low latency), gemini-2.5-pro for architecture generation (higher quality). Streaming via SSE for real-time UX.",
+      content:
+        "Using gemini-2.5-flash for chat (low latency), gemini-2.5-pro for architecture generation (higher quality). Streaming via SSE for real-time UX.",
       category: "decisions",
       tags: ["ai", "gemini", "streaming"],
       pinned: false,
@@ -316,7 +320,8 @@ This is extremely powerful for building type-safe utilities.`,
     },
     {
       title: "Database Schema Conventions",
-      content: "All tables use snake_case columns. Timestamps always include timezone. Soft deletes not used - hard delete with cascade. No UUIDs - serial IDs for simplicity.",
+      content:
+        "All tables use snake_case columns. Timestamps always include timezone. Soft deletes not used - hard delete with cascade. No UUIDs - serial IDs for simplicity.",
       category: "context",
       tags: ["database", "drizzle", "conventions"],
       pinned: false,

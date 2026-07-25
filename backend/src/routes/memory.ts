@@ -20,10 +20,7 @@ function serialize(m: typeof memoryItemsTable.$inferSelect) {
 }
 
 router.get("/memory", async (_req, res): Promise<void> => {
-  const items = await db
-    .select()
-    .from(memoryItemsTable)
-    .orderBy(desc(memoryItemsTable.updatedAt));
+  const items = await db.select().from(memoryItemsTable).orderBy(desc(memoryItemsTable.updatedAt));
   res.json(items.map(serialize));
 });
 

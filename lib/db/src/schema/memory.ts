@@ -11,9 +11,16 @@ export const memoryItemsTable = pgTable("memory_items", {
   pinned: boolean("pinned").notNull().default(false),
   projectId: integer("project_id"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow().$onUpdate(() => new Date()),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .notNull()
+    .defaultNow()
+    .$onUpdate(() => new Date()),
 });
 
-export const insertMemoryItemSchema = createInsertSchema(memoryItemsTable).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertMemoryItemSchema = createInsertSchema(memoryItemsTable).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
 export type InsertMemoryItem = z.infer<typeof insertMemoryItemSchema>;
 export type MemoryItem = typeof memoryItemsTable.$inferSelect;

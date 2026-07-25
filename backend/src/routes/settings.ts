@@ -14,10 +14,7 @@ function serialize(s: typeof settingsTable.$inferSelect) {
 async function getOrCreateSettings() {
   const existing = await db.select().from(settingsTable).limit(1);
   if (existing.length > 0) return existing[0];
-  const [created] = await db
-    .insert(settingsTable)
-    .values({})
-    .returning();
+  const [created] = await db.insert(settingsTable).values({}).returning();
   return created;
 }
 
@@ -33,10 +30,7 @@ router.patch("/settings", async (req, res): Promise<void> => {
     return;
   }
   const settings = await getOrCreateSettings();
-  const [updated] = await db
-    .update(settingsTable)
-    .set(parsed.data)
-    .returning();
+  const [updated] = await db.update(settingsTable).set(parsed.data).returning();
   if (!updated) {
     res.status(500).json({ error: "Failed to update settings" });
     return;

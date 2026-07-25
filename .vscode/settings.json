@@ -1,0 +1,10 @@
+ {
+  "js/ts.preferences.includePackageJsonAutoImports": "on",
+  "typescript.enableProjectDiagnostics": true,
+  "css.unknownAtRules": {
+    "plugin": "ignore",
+    "custom-variant": "ignore",
+    "theme": "ignore",
+    "apply": "ignore"
+  }
+}

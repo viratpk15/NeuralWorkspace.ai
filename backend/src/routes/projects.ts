@@ -12,10 +12,7 @@ import {
 const router: IRouter = Router();
 
 router.get("/projects", async (_req, res): Promise<void> => {
-  const projects = await db
-    .select()
-    .from(projectsTable)
-    .orderBy(projectsTable.updatedAt);
+  const projects = await db.select().from(projectsTable).orderBy(projectsTable.updatedAt);
   res.json(
     projects.map((p) => ({
       ...p,

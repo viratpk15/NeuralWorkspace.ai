@@ -5,7 +5,9 @@ import { projectsTable } from "./projects";
 
 export const milestonesTable = pgTable("milestones", {
   id: serial("id").primaryKey(),
-  projectId: integer("project_id").notNull().references(() => projectsTable.id, { onDelete: "cascade" }),
+  projectId: integer("project_id")
+    .notNull()
+    .references(() => projectsTable.id, { onDelete: "cascade" }),
   name: text("name").notNull(),
   description: text("description").notNull().default(""),
   dueDate: text("due_date"),
@@ -13,6 +15,9 @@ export const milestonesTable = pgTable("milestones", {
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
-export const insertMilestoneSchema = createInsertSchema(milestonesTable).omit({ id: true, createdAt: true });
+export const insertMilestoneSchema = createInsertSchema(milestonesTable).omit({
+  id: true,
+  createdAt: true,
+});
 export type InsertMilestone = z.infer<typeof insertMilestoneSchema>;
 export type Milestone = typeof milestonesTable.$inferSelect;
