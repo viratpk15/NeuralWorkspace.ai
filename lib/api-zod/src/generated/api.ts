@@ -1,0 +1,1171 @@
+/**
+ * Auto-generated API client types.
+ * Managed by the orval code generation pipeline.
+ * Api
+ * Neural Workspace API
+ * OpenAPI spec version: 0.1.0
+ */
+import * as zod from "zod";
+
+/**
+ * @summary Health check
+ */
+export const HealthCheckResponse = zod.object({
+  status: zod.string(),
+});
+
+/**
+ * @summary Get dashboard statistics
+ */
+export const GetDashboardStatsResponse = zod.object({
+  totalProjects: zod.number(),
+  activeProjects: zod.number(),
+  totalTasks: zod.number(),
+  completedTasks: zod.number(),
+  totalConversations: zod.number(),
+  totalMemoryItems: zod.number(),
+  totalPrompts: zod.number(),
+  recentActivity: zod.array(
+    zod.object({
+      id: zod.number(),
+      type: zod.string(),
+      description: zod.string(),
+      createdAt: zod.string(),
+    }),
+  ),
+  projectProgress: zod.array(
+    zod.object({
+      id: zod.number(),
+      name: zod.string(),
+      totalTasks: zod.number(),
+      completedTasks: zod.number(),
+      status: zod.string(),
+    }),
+  ),
+});
+
+/**
+ * @summary List all projects
+ */
+export const ListProjectsResponseItem = zod.object({
+  id: zod.number(),
+  name: zod.string(),
+  description: zod.string(),
+  status: zod.enum(["planning", "active", "paused", "completed", "archived"]),
+  techStack: zod.array(zod.string()),
+  requirements: zod.array(zod.string()),
+  createdAt: zod.string(),
+  updatedAt: zod.string(),
+});
+export const ListProjectsResponse = zod.array(ListProjectsResponseItem);
+
+/**
+ * @summary Create a project
+ */
+
+export const CreateProjectBody = zod.object({
+  name: zod.string().min(1),
+  description: zod.string().optional(),
+  status: zod.enum(["planning", "active", "paused", "completed", "archived"]).optional(),
+  techStack: zod.array(zod.string()).optional(),
+  requirements: zod.array(zod.string()).optional(),
+});
+
+export const CreateProjectResponse = zod.object({
+  id: zod.number(),
+  name: zod.string(),
+  description: zod.string(),
+  status: zod.enum(["planning", "active", "paused", "completed", "archived"]),
+  techStack: zod.array(zod.string()),
+  requirements: zod.array(zod.string()),
+  createdAt: zod.string(),
+  updatedAt: zod.string(),
+});
+
+/**
+ * @summary Get a project
+ */
+export const GetProjectParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const GetProjectResponse = zod.object({
+  id: zod.number(),
+  name: zod.string(),
+  description: zod.string(),
+  status: zod.enum(["planning", "active", "paused", "completed", "archived"]),
+  techStack: zod.array(zod.string()),
+  requirements: zod.array(zod.string()),
+  createdAt: zod.string(),
+  updatedAt: zod.string(),
+});
+
+/**
+ * @summary Update a project
+ */
+export const UpdateProjectParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const UpdateProjectBody = zod.object({
+  name: zod.string().min(1).optional(),
+  description: zod.string().optional(),
+  status: zod.enum(["planning", "active", "paused", "completed", "archived"]).optional(),
+  techStack: zod.array(zod.string()).optional(),
+  requirements: zod.array(zod.string()).optional(),
+});
+
+export const UpdateProjectResponse = zod.object({
+  id: zod.number(),
+  name: zod.string(),
+  description: zod.string(),
+  status: zod.enum(["planning", "active", "paused", "completed", "archived"]),
+  techStack: zod.array(zod.string()),
+  requirements: zod.array(zod.string()),
+  createdAt: zod.string(),
+  updatedAt: zod.string(),
+});
+
+/**
+ * @summary Delete a project
+ */
+export const DeleteProjectParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const DeleteProjectResponse = zod.void();
+
+/**
+ * @summary List tasks for a project
+ */
+export const ListProjectTasksParams = zod.object({
+  projectId: zod.coerce.number(),
+});
+
+export const ListProjectTasksResponseItem = zod.object({
+  id: zod.number(),
+  projectId: zod.number(),
+  milestoneId: zod.number().nullish(),
+  title: zod.string(),
+  description: zod.string(),
+  status: zod.enum(["todo", "in_progress", "review", "done", "cancelled"]),
+  priority: zod.enum(["low", "medium", "high", "urgent"]),
+  createdAt: zod.string(),
+  updatedAt: zod.string(),
+});
+export const ListProjectTasksResponse = zod.array(ListProjectTasksResponseItem);
+
+/**
+ * @summary Create a task
+ */
+export const CreateTaskParams = zod.object({
+  projectId: zod.coerce.number(),
+});
+
+export const CreateTaskBody = zod.object({
+  title: zod.string().min(1),
+  description: zod.string().optional(),
+  status: zod.enum(["todo", "in_progress", "review", "done", "cancelled"]).optional(),
+  priority: zod.enum(["low", "medium", "high", "urgent"]).optional(),
+  milestoneId: zod.number().nullish(),
+});
+
+export const CreateTaskResponse = zod.object({
+  id: zod.number(),
+  projectId: zod.number(),
+  milestoneId: zod.number().nullish(),
+  title: zod.string(),
+  description: zod.string(),
+  status: zod.enum(["todo", "in_progress", "review", "done", "cancelled"]),
+  priority: zod.enum(["low", "medium", "high", "urgent"]),
+  createdAt: zod.string(),
+  updatedAt: zod.string(),
+});
+
+/**
+ * @summary List all tasks across projects
+ */
+export const ListAllTasksResponseItem = zod.object({
+  id: zod.number(),
+  projectId: zod.number(),
+  milestoneId: zod.number().nullish(),
+  title: zod.string(),
+  description: zod.string(),
+  status: zod.enum(["todo", "in_progress", "review", "done", "cancelled"]),
+  priority: zod.enum(["low", "medium", "high", "urgent"]),
+  createdAt: zod.string(),
+  updatedAt: zod.string(),
+});
+export const ListAllTasksResponse = zod.array(ListAllTasksResponseItem);
+
+/**
+ * @summary Update a task
+ */
+export const UpdateTaskParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const UpdateTaskBody = zod.object({
+  title: zod.string().optional(),
+  description: zod.string().optional(),
+  status: zod.enum(["todo", "in_progress", "review", "done", "cancelled"]).optional(),
+  priority: zod.enum(["low", "medium", "high", "urgent"]).optional(),
+  milestoneId: zod.number().nullish(),
+});
+
+export const UpdateTaskResponse = zod.object({
+  id: zod.number(),
+  projectId: zod.number(),
+  milestoneId: zod.number().nullish(),
+  title: zod.string(),
+  description: zod.string(),
+  status: zod.enum(["todo", "in_progress", "review", "done", "cancelled"]),
+  priority: zod.enum(["low", "medium", "high", "urgent"]),
+  createdAt: zod.string(),
+  updatedAt: zod.string(),
+});
+
+/**
+ * @summary Delete a task
+ */
+export const DeleteTaskParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const DeleteTaskResponse = zod.void();
+
+/**
+ * @summary List milestones for a project
+ */
+export const ListProjectMilestonesParams = zod.object({
+  projectId: zod.coerce.number(),
+});
+
+export const ListProjectMilestonesResponseItem = zod.object({
+  id: zod.number(),
+  projectId: zod.number(),
+  name: zod.string(),
+  description: zod.string(),
+  dueDate: zod.string().nullish(),
+  status: zod.enum(["pending", "in_progress", "completed"]),
+  createdAt: zod.string(),
+});
+export const ListProjectMilestonesResponse = zod.array(ListProjectMilestonesResponseItem);
+
+/**
+ * @summary Create a milestone
+ */
+export const CreateMilestoneParams = zod.object({
+  projectId: zod.coerce.number(),
+});
+
+export const CreateMilestoneBody = zod.object({
+  name: zod.string().min(1),
+  description: zod.string().optional(),
+  dueDate: zod.string().optional(),
+  status: zod.enum(["pending", "in_progress", "completed"]).optional(),
+});
+
+export const CreateMilestoneResponse = zod.object({
+  id: zod.number(),
+  projectId: zod.number(),
+  name: zod.string(),
+  description: zod.string(),
+  dueDate: zod.string().nullish(),
+  status: zod.enum(["pending", "in_progress", "completed"]),
+  createdAt: zod.string(),
+});
+
+/**
+ * @summary Update a milestone
+ */
+export const UpdateMilestoneParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const UpdateMilestoneBody = zod.object({
+  name: zod.string().optional(),
+  description: zod.string().optional(),
+  dueDate: zod.string().nullish(),
+  status: zod.enum(["pending", "in_progress", "completed"]).optional(),
+});
+
+export const UpdateMilestoneResponse = zod.object({
+  id: zod.number(),
+  projectId: zod.number(),
+  name: zod.string(),
+  description: zod.string(),
+  dueDate: zod.string().nullish(),
+  status: zod.enum(["pending", "in_progress", "completed"]),
+  createdAt: zod.string(),
+});
+
+/**
+ * @summary Delete a milestone
+ */
+export const DeleteMilestoneParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const DeleteMilestoneResponse = zod.void();
+
+/**
+ * @summary List conversations
+ */
+export const ListConversationsResponseItem = zod.object({
+  id: zod.number(),
+  title: zod.string(),
+  agentType: zod.enum([
+    "coding",
+    "architecture",
+    "planning",
+    "documentation",
+    "testing",
+    "debugging",
+    "general",
+  ]),
+  pinned: zod.boolean(),
+  projectId: zod.number().nullish(),
+  messageCount: zod.number(),
+  createdAt: zod.string(),
+  updatedAt: zod.string(),
+});
+export const ListConversationsResponse = zod.array(ListConversationsResponseItem);
+
+/**
+ * @summary Create a conversation
+ */
+
+export const CreateConversationBody = zod.object({
+  title: zod.string().min(1),
+  agentType: zod.enum([
+    "coding",
+    "architecture",
+    "planning",
+    "documentation",
+    "testing",
+    "debugging",
+    "general",
+  ]),
+  projectId: zod.number().nullish(),
+  pinned: zod.boolean().optional(),
+});
+
+export const CreateConversationResponse = zod.object({
+  id: zod.number(),
+  title: zod.string(),
+  agentType: zod.enum([
+    "coding",
+    "architecture",
+    "planning",
+    "documentation",
+    "testing",
+    "debugging",
+    "general",
+  ]),
+  pinned: zod.boolean(),
+  projectId: zod.number().nullish(),
+  messageCount: zod.number(),
+  createdAt: zod.string(),
+  updatedAt: zod.string(),
+});
+
+/**
+ * @summary Get a conversation
+ */
+export const GetConversationParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const GetConversationResponse = zod.object({
+  id: zod.number(),
+  title: zod.string(),
+  agentType: zod.enum([
+    "coding",
+    "architecture",
+    "planning",
+    "documentation",
+    "testing",
+    "debugging",
+    "general",
+  ]),
+  pinned: zod.boolean(),
+  projectId: zod.number().nullish(),
+  messageCount: zod.number(),
+  createdAt: zod.string(),
+  updatedAt: zod.string(),
+});
+
+/**
+ * @summary Update a conversation
+ */
+export const UpdateConversationParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const UpdateConversationBody = zod.object({
+  title: zod.string().optional(),
+  agentType: zod
+    .enum([
+      "coding",
+      "architecture",
+      "planning",
+      "documentation",
+      "testing",
+      "debugging",
+      "general",
+    ])
+    .optional(),
+  pinned: zod.boolean().optional(),
+  projectId: zod.number().nullish(),
+});
+
+export const UpdateConversationResponse = zod.object({
+  id: zod.number(),
+  title: zod.string(),
+  agentType: zod.enum([
+    "coding",
+    "architecture",
+    "planning",
+    "documentation",
+    "testing",
+    "debugging",
+    "general",
+  ]),
+  pinned: zod.boolean(),
+  projectId: zod.number().nullish(),
+  messageCount: zod.number(),
+  createdAt: zod.string(),
+  updatedAt: zod.string(),
+});
+
+/**
+ * @summary Delete a conversation
+ */
+export const DeleteConversationParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const DeleteConversationResponse = zod.void();
+
+/**
+ * @summary List messages in a conversation
+ */
+export const ListMessagesParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const ListMessagesResponseItem = zod.object({
+  id: zod.number(),
+  conversationId: zod.number(),
+  role: zod.enum(["user", "assistant"]),
+  content: zod.string(),
+  createdAt: zod.string(),
+});
+export const ListMessagesResponse = zod.array(ListMessagesResponseItem);
+
+/**
+ * @summary Send a message (non-streaming, stores user and assistant messages)
+ */
+export const SendMessageParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const SendMessageBody = zod.object({
+  content: zod.string().min(1),
+});
+
+export const SendMessageResponse = zod.object({
+  id: zod.number(),
+  conversationId: zod.number(),
+  role: zod.enum(["user", "assistant"]),
+  content: zod.string(),
+  createdAt: zod.string(),
+});
+
+/**
+ * @summary List memory items
+ */
+export const ListMemoryItemsResponseItem = zod.object({
+  id: zod.number(),
+  title: zod.string(),
+  content: zod.string(),
+  category: zod.enum([
+    "context",
+    "requirements",
+    "decisions",
+    "notes",
+    "documentation",
+    "preferences",
+    "general",
+  ]),
+  tags: zod.array(zod.string()),
+  pinned: zod.boolean(),
+  projectId: zod.number().nullish(),
+  createdAt: zod.string(),
+  updatedAt: zod.string(),
+});
+export const ListMemoryItemsResponse = zod.array(ListMemoryItemsResponseItem);
+
+/**
+ * @summary Create a memory item
+ */
+
+export const CreateMemoryItemBody = zod.object({
+  title: zod.string().min(1),
+  content: zod.string(),
+  category: zod
+    .enum([
+      "context",
+      "requirements",
+      "decisions",
+      "notes",
+      "documentation",
+      "preferences",
+      "general",
+    ])
+    .optional(),
+  tags: zod.array(zod.string()).optional(),
+  pinned: zod.boolean().optional(),
+  projectId: zod.number().nullish(),
+});
+
+export const CreateMemoryItemResponse = zod.object({
+  id: zod.number(),
+  title: zod.string(),
+  content: zod.string(),
+  category: zod.enum([
+    "context",
+    "requirements",
+    "decisions",
+    "notes",
+    "documentation",
+    "preferences",
+    "general",
+  ]),
+  tags: zod.array(zod.string()),
+  pinned: zod.boolean(),
+  projectId: zod.number().nullish(),
+  createdAt: zod.string(),
+  updatedAt: zod.string(),
+});
+
+/**
+ * @summary Get a memory item
+ */
+export const GetMemoryItemParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const GetMemoryItemResponse = zod.object({
+  id: zod.number(),
+  title: zod.string(),
+  content: zod.string(),
+  category: zod.enum([
+    "context",
+    "requirements",
+    "decisions",
+    "notes",
+    "documentation",
+    "preferences",
+    "general",
+  ]),
+  tags: zod.array(zod.string()),
+  pinned: zod.boolean(),
+  projectId: zod.number().nullish(),
+  createdAt: zod.string(),
+  updatedAt: zod.string(),
+});
+
+/**
+ * @summary Update a memory item
+ */
+export const UpdateMemoryItemParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const UpdateMemoryItemBody = zod.object({
+  title: zod.string().optional(),
+  content: zod.string().optional(),
+  category: zod
+    .enum([
+      "context",
+      "requirements",
+      "decisions",
+      "notes",
+      "documentation",
+      "preferences",
+      "general",
+    ])
+    .optional(),
+  tags: zod.array(zod.string()).optional(),
+  pinned: zod.boolean().optional(),
+  projectId: zod.number().nullish(),
+});
+
+export const UpdateMemoryItemResponse = zod.object({
+  id: zod.number(),
+  title: zod.string(),
+  content: zod.string(),
+  category: zod.enum([
+    "context",
+    "requirements",
+    "decisions",
+    "notes",
+    "documentation",
+    "preferences",
+    "general",
+  ]),
+  tags: zod.array(zod.string()),
+  pinned: zod.boolean(),
+  projectId: zod.number().nullish(),
+  createdAt: zod.string(),
+  updatedAt: zod.string(),
+});
+
+/**
+ * @summary Delete a memory item
+ */
+export const DeleteMemoryItemParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const DeleteMemoryItemResponse = zod.void();
+
+/**
+ * @summary List architecture documents
+ */
+export const ListArchitectureDocsResponseItem = zod.object({
+  id: zod.number(),
+  title: zod.string(),
+  content: zod.string(),
+  docType: zod.enum([
+    "folder_structure",
+    "backend",
+    "frontend",
+    "database",
+    "api_design",
+    "component_hierarchy",
+    "tech_recommendations",
+    "full",
+  ]),
+  projectId: zod.number().nullish(),
+  createdAt: zod.string(),
+  updatedAt: zod.string(),
+});
+export const ListArchitectureDocsResponse = zod.array(ListArchitectureDocsResponseItem);
+
+/**
+ * @summary Create an architecture document
+ */
+
+export const CreateArchitectureDocBody = zod.object({
+  title: zod.string().min(1),
+  content: zod.string(),
+  docType: zod.enum([
+    "folder_structure",
+    "backend",
+    "frontend",
+    "database",
+    "api_design",
+    "component_hierarchy",
+    "tech_recommendations",
+    "full",
+  ]),
+  projectId: zod.number().nullish(),
+});
+
+export const CreateArchitectureDocResponse = zod.object({
+  id: zod.number(),
+  title: zod.string(),
+  content: zod.string(),
+  docType: zod.enum([
+    "folder_structure",
+    "backend",
+    "frontend",
+    "database",
+    "api_design",
+    "component_hierarchy",
+    "tech_recommendations",
+    "full",
+  ]),
+  projectId: zod.number().nullish(),
+  createdAt: zod.string(),
+  updatedAt: zod.string(),
+});
+
+/**
+ * @summary Generate architecture with AI
+ */
+
+export const GenerateArchitectureBody = zod.object({
+  prompt: zod.string().min(1),
+  docType: zod.enum([
+    "folder_structure",
+    "backend",
+    "frontend",
+    "database",
+    "api_design",
+    "component_hierarchy",
+    "tech_recommendations",
+    "full",
+  ]),
+  projectId: zod.number().nullish(),
+  projectName: zod.string().optional(),
+  techStack: zod.array(zod.string()).optional(),
+});
+
+export const GenerateArchitectureResponse = zod.object({
+  id: zod.number(),
+  title: zod.string(),
+  content: zod.string(),
+  docType: zod.enum([
+    "folder_structure",
+    "backend",
+    "frontend",
+    "database",
+    "api_design",
+    "component_hierarchy",
+    "tech_recommendations",
+    "full",
+  ]),
+  projectId: zod.number().nullish(),
+  createdAt: zod.string(),
+  updatedAt: zod.string(),
+});
+
+/**
+ * @summary Get an architecture document
+ */
+export const GetArchitectureDocParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const GetArchitectureDocResponse = zod.object({
+  id: zod.number(),
+  title: zod.string(),
+  content: zod.string(),
+  docType: zod.enum([
+    "folder_structure",
+    "backend",
+    "frontend",
+    "database",
+    "api_design",
+    "component_hierarchy",
+    "tech_recommendations",
+    "full",
+  ]),
+  projectId: zod.number().nullish(),
+  createdAt: zod.string(),
+  updatedAt: zod.string(),
+});
+
+/**
+ * @summary Update an architecture document
+ */
+export const UpdateArchitectureDocParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const UpdateArchitectureDocBody = zod.object({
+  title: zod.string().optional(),
+  content: zod.string().optional(),
+  docType: zod
+    .enum([
+      "folder_structure",
+      "backend",
+      "frontend",
+      "database",
+      "api_design",
+      "component_hierarchy",
+      "tech_recommendations",
+      "full",
+    ])
+    .optional(),
+});
+
+export const UpdateArchitectureDocResponse = zod.object({
+  id: zod.number(),
+  title: zod.string(),
+  content: zod.string(),
+  docType: zod.enum([
+    "folder_structure",
+    "backend",
+    "frontend",
+    "database",
+    "api_design",
+    "component_hierarchy",
+    "tech_recommendations",
+    "full",
+  ]),
+  projectId: zod.number().nullish(),
+  createdAt: zod.string(),
+  updatedAt: zod.string(),
+});
+
+/**
+ * @summary Delete an architecture document
+ */
+export const DeleteArchitectureDocParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const DeleteArchitectureDocResponse = zod.void();
+
+/**
+ * @summary List prompts
+ */
+export const ListPromptsResponseItem = zod.object({
+  id: zod.number(),
+  title: zod.string(),
+  content: zod.string(),
+  category: zod.enum([
+    "coding",
+    "architecture",
+    "planning",
+    "documentation",
+    "testing",
+    "debugging",
+    "general",
+  ]),
+  tags: zod.array(zod.string()),
+  favorite: zod.boolean(),
+  version: zod.number(),
+  createdAt: zod.string(),
+  updatedAt: zod.string(),
+});
+export const ListPromptsResponse = zod.array(ListPromptsResponseItem);
+
+/**
+ * @summary Create a prompt
+ */
+
+export const CreatePromptBody = zod.object({
+  title: zod.string().min(1),
+  content: zod.string().min(1),
+  category: zod
+    .enum([
+      "coding",
+      "architecture",
+      "planning",
+      "documentation",
+      "testing",
+      "debugging",
+      "general",
+    ])
+    .optional(),
+  tags: zod.array(zod.string()).optional(),
+  favorite: zod.boolean().optional(),
+});
+
+export const CreatePromptResponse = zod.object({
+  id: zod.number(),
+  title: zod.string(),
+  content: zod.string(),
+  category: zod.enum([
+    "coding",
+    "architecture",
+    "planning",
+    "documentation",
+    "testing",
+    "debugging",
+    "general",
+  ]),
+  tags: zod.array(zod.string()),
+  favorite: zod.boolean(),
+  version: zod.number(),
+  createdAt: zod.string(),
+  updatedAt: zod.string(),
+});
+
+/**
+ * @summary Get a prompt
+ */
+export const GetPromptParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const GetPromptResponse = zod.object({
+  id: zod.number(),
+  title: zod.string(),
+  content: zod.string(),
+  category: zod.enum([
+    "coding",
+    "architecture",
+    "planning",
+    "documentation",
+    "testing",
+    "debugging",
+    "general",
+  ]),
+  tags: zod.array(zod.string()),
+  favorite: zod.boolean(),
+  version: zod.number(),
+  createdAt: zod.string(),
+  updatedAt: zod.string(),
+});
+
+/**
+ * @summary Update a prompt
+ */
+export const UpdatePromptParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const UpdatePromptBody = zod.object({
+  title: zod.string().optional(),
+  content: zod.string().optional(),
+  category: zod
+    .enum([
+      "coding",
+      "architecture",
+      "planning",
+      "documentation",
+      "testing",
+      "debugging",
+      "general",
+    ])
+    .optional(),
+  tags: zod.array(zod.string()).optional(),
+  favorite: zod.boolean().optional(),
+});
+
+export const UpdatePromptResponse = zod.object({
+  id: zod.number(),
+  title: zod.string(),
+  content: zod.string(),
+  category: zod.enum([
+    "coding",
+    "architecture",
+    "planning",
+    "documentation",
+    "testing",
+    "debugging",
+    "general",
+  ]),
+  tags: zod.array(zod.string()),
+  favorite: zod.boolean(),
+  version: zod.number(),
+  createdAt: zod.string(),
+  updatedAt: zod.string(),
+});
+
+/**
+ * @summary Delete a prompt
+ */
+export const DeletePromptParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const DeletePromptResponse = zod.void();
+
+/**
+ * @summary List documentation
+ */
+export const ListDocumentationResponseItem = zod.object({
+  id: zod.number(),
+  title: zod.string(),
+  docType: zod.enum([
+    "readme",
+    "api_docs",
+    "architecture",
+    "developer_guide",
+    "deployment",
+    "setup",
+    "overview",
+    "changelog",
+  ]),
+  content: zod.string(),
+  projectId: zod.number().nullish(),
+  createdAt: zod.string(),
+  updatedAt: zod.string(),
+});
+export const ListDocumentationResponse = zod.array(ListDocumentationResponseItem);
+
+/**
+ * @summary Create documentation
+ */
+
+export const CreateDocumentationBody = zod.object({
+  title: zod.string().min(1),
+  docType: zod.enum([
+    "readme",
+    "api_docs",
+    "architecture",
+    "developer_guide",
+    "deployment",
+    "setup",
+    "overview",
+    "changelog",
+  ]),
+  content: zod.string(),
+  projectId: zod.number().nullish(),
+});
+
+export const CreateDocumentationResponse = zod.object({
+  id: zod.number(),
+  title: zod.string(),
+  docType: zod.enum([
+    "readme",
+    "api_docs",
+    "architecture",
+    "developer_guide",
+    "deployment",
+    "setup",
+    "overview",
+    "changelog",
+  ]),
+  content: zod.string(),
+  projectId: zod.number().nullish(),
+  createdAt: zod.string(),
+  updatedAt: zod.string(),
+});
+
+/**
+ * @summary Generate documentation with AI
+ */
+
+export const GenerateDocumentationBody = zod.object({
+  docType: zod.enum([
+    "readme",
+    "api_docs",
+    "architecture",
+    "developer_guide",
+    "deployment",
+    "setup",
+    "overview",
+    "changelog",
+  ]),
+  prompt: zod.string().min(1),
+  projectId: zod.number().nullish(),
+  projectName: zod.string().optional(),
+  techStack: zod.array(zod.string()).optional(),
+});
+
+export const GenerateDocumentationResponse = zod.object({
+  id: zod.number(),
+  title: zod.string(),
+  docType: zod.enum([
+    "readme",
+    "api_docs",
+    "architecture",
+    "developer_guide",
+    "deployment",
+    "setup",
+    "overview",
+    "changelog",
+  ]),
+  content: zod.string(),
+  projectId: zod.number().nullish(),
+  createdAt: zod.string(),
+  updatedAt: zod.string(),
+});
+
+/**
+ * @summary Get documentation
+ */
+export const GetDocumentationParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const GetDocumentationResponse = zod.object({
+  id: zod.number(),
+  title: zod.string(),
+  docType: zod.enum([
+    "readme",
+    "api_docs",
+    "architecture",
+    "developer_guide",
+    "deployment",
+    "setup",
+    "overview",
+    "changelog",
+  ]),
+  content: zod.string(),
+  projectId: zod.number().nullish(),
+  createdAt: zod.string(),
+  updatedAt: zod.string(),
+});
+
+/**
+ * @summary Update documentation
+ */
+export const UpdateDocumentationParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const UpdateDocumentationBody = zod.object({
+  title: zod.string().optional(),
+  docType: zod
+    .enum([
+      "readme",
+      "api_docs",
+      "architecture",
+      "developer_guide",
+      "deployment",
+      "setup",
+      "overview",
+      "changelog",
+    ])
+    .optional(),
+  content: zod.string().optional(),
+});
+
+export const UpdateDocumentationResponse = zod.object({
+  id: zod.number(),
+  title: zod.string(),
+  docType: zod.enum([
+    "readme",
+    "api_docs",
+    "architecture",
+    "developer_guide",
+    "deployment",
+    "setup",
+    "overview",
+    "changelog",
+  ]),
+  content: zod.string(),
+  projectId: zod.number().nullish(),
+  createdAt: zod.string(),
+  updatedAt: zod.string(),
+});
+
+/**
+ * @summary Delete documentation
+ */
+export const DeleteDocumentationParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const DeleteDocumentationResponse = zod.void();
+
+/**
+ * @summary Get application settings
+ */
+export const GetSettingsResponse = zod.object({
+  id: zod.number(),
+  theme: zod.enum(["dark", "light", "system"]),
+  aiModel: zod.string(),
+  workspaceName: zod.string(),
+  memoryEnabled: zod.boolean().optional(),
+  updatedAt: zod.string(),
+});
+
+/**
+ * @summary Update application settings
+ */
+export const UpdateSettingsBody = zod.object({
+  theme: zod.enum(["dark", "light", "system"]).optional(),
+  aiModel: zod.string().optional(),
+  workspaceName: zod.string().optional(),
+  memoryEnabled: zod.boolean().optional(),
+});
+
+export const UpdateSettingsResponse = zod.object({
+  id: zod.number(),
+  theme: zod.enum(["dark", "light", "system"]),
+  aiModel: zod.string(),
+  workspaceName: zod.string(),
+  memoryEnabled: zod.boolean().optional(),
+  updatedAt: zod.string(),
+});

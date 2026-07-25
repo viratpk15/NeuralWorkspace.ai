@@ -1,0 +1,33 @@
+{
+  "name": "neural-workspace",
+  "version": "1.0.0",
+  "license": "MIT",
+  "scripts": {
+    "preinstall": "sh -c 'rm -f package-lock.json yarn.lock; case \"$npm_config_user_agent\" in pnpm/*) ;; *) echo \"Use pnpm instead\" >&2; exit 1 ;; esac'",
+    "build": "pnpm run typecheck && pnpm -r --if-present run build",
+    "typecheck:libs": "tsc --build",
+    "typecheck": "pnpm run typecheck:libs && pnpm -r --filter \"./artifacts/**\" --filter \"./scripts\" --if-present run typecheck",
+    "lint": "eslint \"lib/**/*.{ts,tsx}\" \"artifacts/**/*.{ts,tsx}\" \"scripts/**/*.{ts,tsx}\"",
+    "lint:fix": "eslint --fix \"lib/**/*.{ts,tsx}\" \"artifacts/**/*.{ts,tsx}\" \"scripts/**/*.{ts,tsx}\"",
+    "format": "prettier --write \"**/*.{ts,tsx,json,css,md}\" --ignore-path .gitignore",
+    "format:check": "prettier --check \"**/*.{ts,tsx,json,css,md}\" --ignore-path .gitignore"
+  },
+  "type": "module",
+  "private": true,
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@rollup/rollup-darwin-arm64": "^4.62.2",
+    "@types/node": "catalog:",
+    "eslint": "^10.7.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.6",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.3",
+    "globals": "^17.7.0",
+    "lightningcss": "^1.33.0",
+    "lightningcss-darwin-arm64": "^1.33.0",
+    "prettier": "^3.9.6",
+    "typescript": "~5.9.3",
+    "typescript-eslint": "^8.65.0"
+  }
+}

@@ -1,0 +1,20 @@
+/**
+ * Auto-generated API client types.
+ * Managed by the orval code generation pipeline.
+ * Api
+ * Neural Workspace API
+ * OpenAPI spec version: 0.1.0
+ */
+import type { ConversationAgentType } from "./conversationAgentType";
+
+export interface Conversation {
+  id: number;
+  title: string;
+  agentType: ConversationAgentType;
+  pinned: boolean;
+  /** @nullable */
+  projectId?: number | null;
+  messageCount: number;
+  createdAt: string;
+  updatedAt: string;
+}

@@ -1,0 +1,1 @@
+- [Neural Workspace Architecture](neural-workspace-arch.md) — stack, icon gotchas, streaming SSE pattern, seeding approach, missing type workarounds
