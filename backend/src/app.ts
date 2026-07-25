@@ -29,6 +29,16 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.get("/health", (_req, res) => {
+  const data = {
+    status: "ok",
+    service: "neural-workspace-backend",
+    version: "1.0.0",
+    timestamp: new Date().toISOString(),
+  };
+  res.status(200).json(data);
+});
+
 app.use("/api", router);
 
 export default app;

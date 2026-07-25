@@ -109,6 +109,7 @@ if (missing.length > 0) {
 // ---------------------------------------------------------------------------
 
 // The LLM provider is selected via the LLM_PROVIDER environment variable.
+// Supported values: "ollama" | "gemini"
 // Default: "ollama" (local development)
 // Set to "gemini" to use Google's Gemini API (requires GEMINI_API_KEY).
 const LLM_PROVIDER = (process.env["LLM_PROVIDER"] ?? "ollama") as "ollama" | "gemini";
@@ -134,11 +135,32 @@ export const env = {
 } as const;
 
 // ---------------------------------------------------------------------------
-// LLM Provider Singleton
+// Startup-time LLM Provider Validation (Fail Fast)
 // ---------------------------------------------------------------------------
 
 import { createLLMProvider } from "./llm";
 import type { LLMProvider } from "./llm";
+
+// Validate LLM provider configuration at startup
+console.log(`[config] Initializing LLM provider: ${LLM_PROVIDER}`);
+
+try {
+  createLLMProvider(LLM_PROVIDER, {
+    ollamaBaseUrl: OLLAMA_BASE_URL,
+    ollamaModel: OLLAMA_MODEL,
+    geminiApiKey: env.GEMINI_API_KEY,
+  });
+  console.log(`[config] LLM provider initialized successfully: ${LLM_PROVIDER}`);
+} catch (error) {
+  console.error(
+    `[config] Failed to initialize LLM provider "${LLM_PROVIDER}": ${(error as Error).message}`
+  );
+  process.exit(1);
+}
+
+// ---------------------------------------------------------------------------
+// LLM Provider Singleton
+// ---------------------------------------------------------------------------
 
 let _llmProvider: LLMProvider | null = null;
 
