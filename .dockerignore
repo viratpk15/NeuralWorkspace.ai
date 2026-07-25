@@ -1,22 +1,24 @@
 .git
 .gitignore
 
+.github
+
+.vscode
+
+.venv
+
 node_modules
 **/node_modules
 
 dist
 **/dist
 
-.vscode
-
-.venv
+coverage
 
 .env
 .env.*
 
-coverage
-
 *.log
 
-frontend/dist
-backend/dist
+README.md
+TODO.md

@@ -1,12 +1,13 @@
-# ---------- Base ----------
+# syntax=docker/dockerfile:1
+
 FROM node:22-bookworm-slim
 
 WORKDIR /app
 
 # Enable pnpm
-RUN corepack enable
+RUN corepack enable && corepack prepare pnpm@11.16.0 --activate
 
-# Copy workspace files first
+# Copy workspace manifests first
 COPY package.json .
 COPY pnpm-lock.yaml .
 COPY pnpm-workspace.yaml .
@@ -26,4 +27,4 @@ RUN pnpm --filter @workspace/api-server build
 
 EXPOSE 3001
 
-CMD ["pnpm", "--filter", "@workspace/api-server", "start"]
+CMD ["pnpm","--filter","@workspace/api-server","start"]
