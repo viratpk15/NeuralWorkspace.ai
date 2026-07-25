@@ -161,6 +161,10 @@ export function getStreamState(jobId: string): {
 }
 
 async function attemptStream(jobId: string, url: string, body: Record<string, unknown>, attempt: number) {
+  // Apply API base URL if configured (for production deployments)
+  const { getBaseUrl } = await import("@workspace/api-client-react");
+  const baseUrl = getBaseUrl();
+  const fullUrl = baseUrl && url.startsWith("/") ? `${baseUrl}${url}` : url;
   const active = activeStreams.get(jobId);
   if (!active) return;
 
@@ -169,7 +173,7 @@ async function attemptStream(jobId: string, url: string, body: Record<string, un
   updateJob(jobId, { status: "generating", progress: Math.min(10, Math.round((active.accumulatedContent.length / 8000) * 100)) });
 
   try {
-    const response = await fetch(url, {
+    const response = await fetch(fullUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
@@ -182,7 +186,7 @@ async function attemptStream(jobId: string, url: string, body: Record<string, un
 
       if (attempt < MAX_RECONNECT_ATTEMPTS) {
         const delay = Math.min(1000 * Math.pow(2, attempt), 8000);
-        setTimeout(() => attemptStream(jobId, url, body, attempt + 1), delay);
+        setTimeout(() => attemptStream(jobId, fullUrl, body, attempt + 1), delay);
         return;
       }
 
@@ -270,7 +274,7 @@ async function attemptStream(jobId: string, url: string, body: Record<string, un
 
     if (attempt < MAX_RECONNECT_ATTEMPTS) {
       const delay = Math.min(1000 * Math.pow(2, attempt), 8000);
-      setTimeout(() => attemptStream(jobId, url, body, attempt + 1), delay);
+      setTimeout(() => attemptStream(jobId, fullUrl, body, attempt + 1), delay);
       return;
     }
 
@@ -420,7 +424,12 @@ export function useSSEStream() {
     setState({ isStreaming: true, streamedContent: "", error: null, result: null });
 
     try {
-      const response = await fetch(options.url, {
+      // Apply API base URL if configured (for production deployments)
+      const { getBaseUrl } = await import("@workspace/api-client-react");
+      const baseUrl = getBaseUrl();
+      const fullUrl = baseUrl && options.url.startsWith("/") ? `${baseUrl}${options.url}` : options.url;
+
+      const response = await fetch(fullUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(options.body),
