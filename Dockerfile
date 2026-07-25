@@ -44,10 +44,10 @@ RUN groupadd -r appuser && useradd -r -g appuser -d /app -s /sbin/nologin appuse
 
 USER appuser
 
-EXPOSE 3001
+EXPOSE 8080
 
-# Health check for Railway
+# Health check for Railway (uses dynamic PORT, defaults to 8080)
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD node -e "require('http').get('http://localhost:3001/health', (r) => { process.exit(r.statusCode === 200 ? 0 : 1) })" || exit 1
+  CMD node -e "const p = process.env.PORT || '8080'; require('http').get('http://localhost:'+p+'/health', (r) => { process.exit(r.statusCode === 200 ? 0 : 1) })" || exit 1
 
 CMD ["node", "--enable-source-maps", "./dist/index.mjs"]
