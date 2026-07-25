@@ -2,6 +2,9 @@
   "name": "neural-workspace",
   "version": "1.0.0",
   "license": "MIT",
+  "type": "module",
+  "private": true,
+  "packageManager": "pnpm@11.16.0",
   "scripts": {
     "preinstall": "sh -c 'rm -f package-lock.json yarn.lock; case \"$npm_config_user_agent\" in pnpm/*) ;; *) echo \"Use pnpm instead\" >&2; exit 1 ;; esac'",
     "build": "pnpm run typecheck && pnpm -r --if-present run build",
@@ -12,8 +15,6 @@
     "format": "prettier --write \"**/*.{ts,tsx,json,css,md}\" --ignore-path .gitignore",
     "format:check": "prettier --check \"**/*.{ts,tsx,json,css,md}\" --ignore-path .gitignore"
   },
-  "type": "module",
-  "private": true,
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@rollup/rollup-darwin-arm64": "^4.62.2",
