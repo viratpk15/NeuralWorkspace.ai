@@ -8,11 +8,11 @@ if (!DATABASE_URL) {
   process.exit(1);
 }
 
-console.log("Running database migrations...");
+console.warn("Running database migrations...");
 
 try {
   await migrate(db, { migrationsFolder: "./migrations" });
-  console.log("✓ Migrations completed successfully");
+  console.warn("✓ Migrations completed successfully");
   process.exit(0);
 } catch (error) {
   console.error("✗ Migration failed:", error);
