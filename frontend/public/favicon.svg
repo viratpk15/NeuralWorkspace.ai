@@ -1,3 +1,76 @@
 <svg width="180" height="180" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect width="180" height="180" rx="36" fill="#FF3C00"/>
+  <!-- Background rounded rect with dark theme color -->
+  <rect width="180" height="180" rx="36" fill="#0D111D"/>
+
+  <!-- Subtle outer glow ring -->
+  <rect x="2" y="2" width="176" height="176" rx="34" fill="none" stroke="#7C8AFF" stroke-opacity="0.15" stroke-width="2"/>
+
+  <!-- Neural network connections (synaptic lines) -->
+  <g stroke="#7C8AFF" stroke-opacity="0.35" stroke-width="2.5" stroke-linecap="round">
+    <!-- Top cluster -->
+    <line x1="58" y1="42" x2="90" y2="68"/>
+    <line x1="90" y1="68" x2="122" y2="42"/>
+    <line x1="58" y1="42" x2="90" y2="22"/>
+    <line x1="122" y1="42" x2="90" y2="22"/>
+    <line x1="58" y1="42" x2="122" y2="42"/>
+    
+    <!-- Middle cluster (hub) connections -->
+    <line x1="90" y1="68" x2="90" y2="90"/>
+    <line x1="58" y1="42" x2="56" y2="96"/>
+    <line x1="122" y1="42" x2="124" y2="96"/>
+    
+    <!-- Middle to bottom -->
+    <line x1="90" y1="90" x2="58" y2="132"/>
+    <line x1="90" y1="90" x2="122" y2="132"/>
+    <line x1="90" y1="90" x2="90" y2="148"/>
+    <line x1="56" y1="96" x2="58" y2="132"/>
+    <line x1="124" y1="96" x2="122" y2="132"/>
+    <line x1="56" y1="96" x2="90" y2="148"/>
+    <line x1="124" y1="96" x2="90" y2="148"/>
+    
+    <!-- Bottom horizontal -->
+    <line x1="58" y1="132" x2="122" y2="132"/>
+    <line x1="58" y1="132" x2="38" y2="150"/>
+    <line x1="122" y1="132" x2="142" y2="150"/>
+    
+    <!-- Side connections -->
+    <line x1="38" y1="150" x2="90" y2="148"/>
+    <line x1="142" y1="150" x2="90" y2="148"/>
+    <line x1="38" y1="150" x2="142" y2="150"/>
+  </g>
+
+  <!-- Neural nodes (synaptic junctions) -->
+  <g fill="#7C8AFF">
+    <!-- Top layer nodes -->
+    <circle cx="90" cy="22" r="6"/>
+    <circle cx="58" cy="42" r="7"/>
+    <circle cx="122" cy="42" r="7"/>
+    
+    <!-- Middle layer nodes -->
+    <circle cx="90" cy="68" r="8"/>
+    <circle cx="56" cy="96" r="5.5"/>
+    <circle cx="124" cy="96" r="5.5"/>
+    
+    <!-- Center hub (larger, brighter) -->
+    <circle cx="90" cy="90" r="10" fill="#7C8AFF"/>
+    <circle cx="90" cy="90" r="6" fill="#A5B1FF"/>
+    <circle cx="90" cy="90" r="3" fill="#ffffff" fill-opacity="0.5"/>
+
+    <!-- Bottom layer nodes -->
+    <circle cx="58" cy="132" r="7"/>
+    <circle cx="122" cy="132" r="7"/>
+    <circle cx="90" cy="148" r="5"/>
+    <circle cx="38" cy="150" r="4.5"/>
+    <circle cx="142" cy="150" r="4.5"/>
+  </g>
+
+  <!-- Node highlight glows -->
+  <g fill="#7C8AFF">
+    <circle cx="90" cy="90" r="16" fill-opacity="0.08"/>
+    <circle cx="58" cy="42" r="12" fill-opacity="0.06"/>
+    <circle cx="122" cy="42" r="12" fill-opacity="0.06"/>
+    <circle cx="90" cy="68" r="14" fill-opacity="0.06"/>
+    <circle cx="58" cy="132" r="12" fill-opacity="0.06"/>
+    <circle cx="122" cy="132" r="12" fill-opacity="0.06"/>
+  </g>
 </svg>
