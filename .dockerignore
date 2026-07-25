@@ -1,24 +1,62 @@
+# Git
 .git
 .gitignore
 
+# GitHub
 .github
 
+# VS Code
 .vscode
 
+# Python
 .venv
+**/.venv
+venv/
+**/venv/
 
+# Dependencies (installed in container)
 node_modules
 **/node_modules
 
+# Build outputs (built in container)
 dist
 **/dist
+build
+**/build
 
+# Test coverage
 coverage
+**/coverage
 
+# Environment files (loaded at runtime)
 .env
 .env.*
+!.env.example
 
+# Logs
 *.log
+logs/
+**/logs/
 
+# Documentation
 README.md
 TODO.md
+CONTRIBUTING.md
+CHANGELOG.md
+
+# IDE files
+.idea
+.vscode
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Misc
+.cache
+**/.cache
+artifacts/
+**/artifacts/

@@ -69,10 +69,10 @@ if (dotenvPath) {
   if (result.error) {
     console.warn(`[config] Failed to load ${dotenvPath}: ${result.error.message}`);
   } else {
-    console.log(`[config] Loaded environment from ${dotenvPath}`);
+    console.warn(`[config] Loaded environment from ${dotenvPath}`);
   }
 } else {
-  console.log("[config] No .env file found – using existing process.env (production / CI)");
+  console.warn("[config] No .env file found – using existing process.env (production / CI)");
 }
 
 // ---------------------------------------------------------------------------
@@ -142,7 +142,7 @@ import { createLLMProvider } from "./llm";
 import type { LLMProvider } from "./llm";
 
 // Validate LLM provider configuration at startup
-console.log(`[config] Initializing LLM provider: ${LLM_PROVIDER}`);
+console.warn(`[config] Initializing LLM provider: ${LLM_PROVIDER}`);
 
 try {
   createLLMProvider(LLM_PROVIDER, {
@@ -150,7 +150,7 @@ try {
     ollamaModel: OLLAMA_MODEL,
     geminiApiKey: env.GEMINI_API_KEY,
   });
-  console.log(`[config] LLM provider initialized successfully: ${LLM_PROVIDER}`);
+  console.warn(`[config] LLM provider initialized successfully: ${LLM_PROVIDER}`);
 } catch (error) {
   console.error(
     `[config] Failed to initialize LLM provider "${LLM_PROVIDER}": ${(error as Error).message}`
