@@ -20,6 +20,6 @@
     }
   ],
   "env": {
-    "VITE_API_URL": "https://nurturing-hope-production-3e49.up.railway.app"
+"VITE_API_URL":"https://nurturing-hope-production-3e49.up.railway.app","ENABLE_COREPACK":"1"
   }
 }
